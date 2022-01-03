@@ -1,0 +1,13 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile",   // 任务名称，与launch.json的preLaunchTask相对应
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "type": "shell",
+            "command": "cmake .. && make"
+        }
+    ]
+}
