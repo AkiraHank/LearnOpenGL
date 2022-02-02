@@ -11,9 +11,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 //non-callbacks
 void processInput(GLFWwindow *window);
 
-
 //static data
 extern const char *vertexShaderSource;
 extern const char *fragmentShaderSource;
+extern const char *fragmentShaderSource_yellow;
 
 #endif //OPENGL_TEST_CALLBACKS_H
