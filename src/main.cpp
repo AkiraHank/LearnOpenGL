@@ -7,18 +7,9 @@
 int demo();
 
 int main(int argv, char** args) {
-    //demo();
+    demo();
     return 0;   
 } 
-
-class test{
-public:
-    int x;
-    test()=default;
-    ~test() {
-
-    }
-};
 
 int demo(){ 
     glfwInit();

@@ -4,16 +4,16 @@
 #include "callbacks.h"
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    glViewport(0, 0, width, height);
+  glViewport(0, 0, width, height);
 }
 
 void processInput(GLFWwindow *window)
 {
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+  if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    glfwSetWindowShouldClose(window, true);
 }
 
-//static data
+//const data
 const char *vertexShaderSource = "#version 330 core\n"
   "layout (location = 0) in vec3 aPos;\n"
   "void main()\n"
@@ -27,4 +27,3 @@ const char *fragmentShaderSource = "#version 330 core\n"
   "{\n"
   "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
   "}\n\0";
- 
