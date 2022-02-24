@@ -7,7 +7,7 @@
         {
             "type": "lldb", 
             "request": "launch",
-            "name": "build and Debug",
+            "name": "Build and Debug",
             "cwd": "${workspaceFolder}",
             "program": "build/OpenGL_test",
             "args": [],

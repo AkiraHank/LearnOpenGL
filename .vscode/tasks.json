@@ -7,7 +7,7 @@
                 "cwd": "${workspaceFolder}/build"
             },
             "type": "shell",
-            "command": "cmake .. && make"
+            "command": "./build.sh"
         },
         {
             "label": "test",
