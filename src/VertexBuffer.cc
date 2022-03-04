@@ -1,7 +1,8 @@
 #include "VertexBuffer.h"
 #include <iostream>
+#include "glad/glad.h" // 包含glad来获取所有的必须OpenGL头文件
 
-VertexBuffer::VertexBuffer(const void* data, uint32_t size)
+VertexBuffer::VertexBuffer(const void* data, unsigned int size)
 {
   glGenBuffers(1, &m_renderID);
   glBindBuffer(GL_ARRAY_BUFFER, m_renderID);

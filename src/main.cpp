@@ -20,6 +20,7 @@ static constexpr int windowHeight = 600;
 int demo();
 
 int main(int argv, char** args) {
+    system("chdir");
     demo();
     return 0;
 }
@@ -58,7 +59,7 @@ int demo(){
     glEnable(GL_DEPTH_TEST);
     // OpenGL settings end here
     
-    uint32_t indices[] = {
+    unsigned int indices[] = {
         0, 1, 3,
         1, 2, 3
     };
@@ -109,7 +110,7 @@ int demo(){
     };
     auto vbPtr = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
 
-    uint32_t VAO;
+    unsigned int VAO;
     glGenVertexArrays(1, &VAO);
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure 
     // vertex attributes(s).
@@ -123,12 +124,27 @@ int demo(){
     //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     //glEnableVertexAttribArray(2);
     
-    uint32_t texture1, texture2;
-    loadImg("/Users/hank/Documents/VSProjects/OpenGL/resources/textures/container.jpg", &texture1);
-    loadImg("/Users/hank/Documents/VSProjects/OpenGL/resources/textures/awesomeface.jpg", &texture2);
+    unsigned int texture1, texture2;
+    std::string imgPath1, imgPath2, shaderPath1, shaderPath2;
 
-    Shader shader("/Users/hank/Documents/VSProjects/OpenGL/resources/shaders/triangle.vs", 
-                "/Users/hank/Documents/VSProjects/OpenGL/resources/shaders/triangle.fs");
+#ifdef WIN32
+    imgPath1 = "..\\..\\..\\resources\\textures\\container.jpg";
+    imgPath2 = "..\\..\\..\\resources\\textures\\awesomeface.jpg";
+    shaderPath1 = "..\\..\\..\\resources\\shaders\\triangle.vs";
+    shaderPath2 = "..\\..\\..\\resources\\shaders\\triangle.fs";
+#endif
+#ifdef APPLE
+    imgPath1 = "..\\..\\..\\resources\\textures\\container.jpg";
+    imgPath2 = "..\\..\\..\\resources\\textures\\awesomeface.jpg";
+    shaderPath1 = "..\\..\\..\\resources\\shaders\\triangle.vs";
+    shaderPath2 = "..\\..\\..\\resources\\shaders\\triangle.fs";
+#endif
+
+    loadImg(imgPath1.c_str(), &texture1);
+    loadImg(imgPath2.c_str(), &texture2);
+
+    Shader shader(shaderPath1.c_str(), shaderPath2.c_str());
+
     shader.init();
     shader.use();
     shader.setInt("ourTexture1", 0);

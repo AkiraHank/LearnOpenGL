@@ -4,6 +4,7 @@
 #include "callbacks.h"
 #include "stb_image.h"
 #include "glm/glm.hpp"
+#include "stdint.h"
 
 //global variables
 extern float mixVal;
@@ -62,7 +63,7 @@ void processInput(GLFWwindow* window)
   fflush(stdout);
 }
 
-uint32_t loadImg(const char* path, uint32_t* tex_id)
+unsigned int loadImg(const char* path, unsigned int* tex_id)
 {
   //load texture
   glGenTextures(1, tex_id);
@@ -90,7 +91,7 @@ uint32_t loadImg(const char* path, uint32_t* tex_id)
   return true;
 }
 
-uint32_t loadImg_clamp(const char* path, uint32_t* tex_id)
+unsigned int loadImg_clamp(const char* path, unsigned int* tex_id)
 {
   //load texture
   glGenTextures(1, tex_id);

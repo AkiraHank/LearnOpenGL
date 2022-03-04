@@ -16,8 +16,8 @@ void processInput(GLFWwindow *window);
 
 //helpers
 
-uint32_t loadImg(const char* path, uint32_t* tex_id);
-uint32_t loadImg_clamp(const char* path, uint32_t* tex_id);
+unsigned int loadImg(const char* path, unsigned int* tex_id);
+unsigned int loadImg_clamp(const char* path, unsigned int* tex_id);
 
 
 

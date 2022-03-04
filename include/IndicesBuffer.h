@@ -1,13 +1,11 @@
 #pragma once
 
-#include "glad/glad.h" // 包含glad来获取所有的必须OpenGL头文件
-
 class IndicesBuffer {
 private:
-  uint32_t m_renderID;
-  uint32_t m_count;
+  unsigned int m_renderID;
+  unsigned int m_count;
 public:
-  IndicesBuffer(const uint32_t* data, uint32_t count);
+  IndicesBuffer(const unsigned int* data, unsigned int count);
   ~IndicesBuffer();
 
   void bind() const;
