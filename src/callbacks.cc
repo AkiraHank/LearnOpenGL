@@ -21,6 +21,10 @@ static float deltaTime = 0.0f; // 当前帧与上一帧的时间差
 static float lastFrame = 0.0f; // 上一帧的时间
 static bool firstMouse = true;
 
+extern int windowWidth;
+extern int windowHeight;
+extern GLFWwindow* window;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
   glViewport(0, 0, width, height);

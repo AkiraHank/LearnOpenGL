@@ -18,7 +18,6 @@ void processInput(GLFWwindow *window);
 
 unsigned int loadImg(const char* path, unsigned int* tex_id);
 unsigned int loadImg_clamp(const char* path, unsigned int* tex_id);
-
-
+ 
 
 #endif //OPENGL_TEST_CALLBACKS_H

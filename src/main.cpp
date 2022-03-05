@@ -14,50 +14,22 @@ glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
-static constexpr int windowWidth  = 800;
-static constexpr int windowHeight = 600;
+int windowWidth  = 800;
+int windowHeight = 600;
 
-int demo();
+GLFWwindow* window = nullptr;
+
+void init();
+void demo1();
+void demo2(); 
 
 int main(int argv, char** args) {
-    demo();
+    init();
+    demo1();
     return 0;
 }
 
-int demo(){ 
-    glfwInit();
-    // window related
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
-
-    glViewport(0, 0, windowWidth, windowHeight);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    // window related end here
-    
-    // OpenGL settings
-    glEnable(GL_DEPTH_TEST);
-    // OpenGL settings end here
-    
+void demo1(){ 
     unsigned int indices[] = {
         0, 1, 3,
         1, 2, 3
@@ -130,15 +102,14 @@ int demo(){
     system("chdir");
     imgPath1 = "..\\..\\..\\resources\\textures\\container.jpg";
     imgPath2 = "..\\..\\..\\resources\\textures\\awesomeface.jpg";
-    shaderPath1 = "..\\..\\..\\resources\\shaders\\triangle.vs";
-    shaderPath2 = "..\\..\\..\\resources\\shaders\\triangle.fs";
-#endif
-#ifdef __APPLE__
+    shaderPath1 = "..\\..\\..\\resources\\shaders\\chapter1\\triangle.vs";
+    shaderPath2 = "..\\..\\..\\resources\\shaders\\chapter1\\triangle.fs";
+#elif defined __APPLE__
     system("pwd");
     imgPath1 = "resources/textures/container.jpg";
     imgPath2 = "resources/textures/awesomeface.jpg";
-    shaderPath1 = "resources/shaders/triangle.vs";
-    shaderPath2 = "resources/shaders/triangle.fs";
+    shaderPath1 = "resources/shaders/chapter1/triangle.vs";
+    shaderPath2 = "resources/shaders/chapter1/triangle.fs";
 #endif
 
     loadImg(imgPath1.c_str(), &texture1);
@@ -212,6 +183,46 @@ int demo(){
         glfwPollEvents();
     }
 
-    glfwTerminate();
-    return 1;
+    glfwTerminate(); 
+}
+
+void demo2() { 
+    
+}
+
+void init() {
+    glfwInit();
+
+    window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", NULL, NULL);
+
+    // window related
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return;
+    }
+
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return;
+    }
+
+    glViewport(0, 0, windowWidth, windowHeight);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // window related end here
+
+    // OpenGL settings
+    glEnable(GL_DEPTH_TEST);
+    // OpenGL settings end here 
 }
