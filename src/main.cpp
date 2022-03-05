@@ -20,7 +20,6 @@ static constexpr int windowHeight = 600;
 int demo();
 
 int main(int argv, char** args) {
-    system("chdir");
     demo();
     return 0;
 }
@@ -128,16 +127,18 @@ int demo(){
     std::string imgPath1, imgPath2, shaderPath1, shaderPath2;
 
 #ifdef WIN32
+    system("chdir");
     imgPath1 = "..\\..\\..\\resources\\textures\\container.jpg";
     imgPath2 = "..\\..\\..\\resources\\textures\\awesomeface.jpg";
     shaderPath1 = "..\\..\\..\\resources\\shaders\\triangle.vs";
     shaderPath2 = "..\\..\\..\\resources\\shaders\\triangle.fs";
 #endif
-#ifdef APPLE
-    imgPath1 = "..\\..\\..\\resources\\textures\\container.jpg";
-    imgPath2 = "..\\..\\..\\resources\\textures\\awesomeface.jpg";
-    shaderPath1 = "..\\..\\..\\resources\\shaders\\triangle.vs";
-    shaderPath2 = "..\\..\\..\\resources\\shaders\\triangle.fs";
+#ifdef __APPLE__
+    system("pwd");
+    imgPath1 = "resources/textures/container.jpg";
+    imgPath2 = "resources/textures/awesomeface.jpg";
+    shaderPath1 = "resources/shaders/triangle.vs";
+    shaderPath2 = "resources/shaders/triangle.fs";
 #endif
 
     loadImg(imgPath1.c_str(), &texture1);
