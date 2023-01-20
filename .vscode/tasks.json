@@ -4,10 +4,10 @@
         {
             "label": "Compile",   // 任务名称，与launch.json的preLaunchTask相对应
             "options": {
-                "cwd": "${workspaceFolder}/build"
+                "cwd": "${workspaceFolder}"
             },
             "type": "shell",
-            "command": "./build.sh"
+            "command": "cd build && cmake .. && make"
         },
         {
             "label": "test",
