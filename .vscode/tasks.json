@@ -2,12 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Compile",   // 任务名称，与launch.json的preLaunchTask相对应
+            "label": "Compile",
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}/build"
             },
             "type": "shell",
-            "command": "cd build && cmake .. && make"
+            "command": "cmake .. && make"
         },
         {
             "label": "test",
@@ -16,6 +16,6 @@
             },
             "type": "shell",
             "command": "clang++ test.cc -o test -std=c++17"
-        }
+        },
     ]
 }

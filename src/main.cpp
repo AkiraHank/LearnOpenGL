@@ -1,293 +1,452 @@
-#include "callbacks.h" 
+#include "callbacks.h"
 #include "myShader.h"
 #include "VertexBuffer.h"
 #include "IndicesBuffer.h"
 #include <memory>
 
 float mixVal = 0.2f;
-float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
-float pitch =  0.0f;
+float yaw = -90.0f; // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+float pitch = 0.0f;
 float lastX = 400;
 float lastY = 300;
 
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-int windowWidth  = 800;
+int windowWidth = 800;
 int windowHeight = 600;
 
 GLFWwindow* window = nullptr;
 
 void init();
+void demo();
 void demo1();
 void demo2();
 
 int main(int argv, char** args) {
-    init();
-    demo1();
-    return 0;
+  init();
+  demo1();
+  return 0;
 }
 
-void demo1(){ 
-    unsigned int indices[] = {
-        0, 1, 3,
-        1, 2, 3
-    };
-    auto ibPtr = std::make_shared<IndicesBuffer>(indices, 6);
+void demo() {
+  const char* vertexShaderSource = "#version 330 core\n"
+                                   "layout (location = 0) in vec3 aPos;\n"
+                                   "void main()\n"
+                                   "{\n"
+                                   "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+                                   "}\0";
+  unsigned int vertexShader;
+  vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+  glCompileShader(vertexShader);
+  int success;
+  char infoLog[512];
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+              << infoLog << std::endl;
+  }
 
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+  const char* fragmentShaderSource = "#version 330 core\n"
+                                     "out vec4 FragColor;\n"
+                                     "void main()\n"
+                                     "{\n"
+                                     "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+                                     "}\0";
+  unsigned int fragmentShader;
+  fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+  glCompileShader(fragmentShader);
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+  unsigned int shaderProgram;
+  shaderProgram = glCreateProgram();
+  glAttachShader(shaderProgram, vertexShader);
+  glAttachShader(shaderProgram, fragmentShader);
+  glLinkProgram(shaderProgram);
+  glDeleteShader(vertexShader);
+  glDeleteShader(fragmentShader);
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  float vertices[] = {
+      -0.5f, -0.5f, 0.0f, // left
+      0.5f, -0.5f, 0.0f,  // right
+      0.0f, 0.5f, 0.0f    // top
+  };
 
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  unsigned int VBO, VAO;
+  glGenVertexArrays(1, &VAO);
+  glGenBuffers(1, &VBO);
+  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+  glBindVertexArray(VAO);
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-    auto vbPtr = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure 
-    // vertex attributes(s).
-    glBindVertexArray(VAO);
-    
-    // set vertex attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    //glEnableVertexAttribArray(2);
-    
-    unsigned int texture1, texture2;
-    std::string imgPath1, imgPath2, shaderPath1, shaderPath2;
+  // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+  // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+  glBindVertexArray(0);
+  // render loop
+  // -----------
+  while (!glfwWindowShouldClose(window)) {
+    // input
+    // -----
+    processInput(window);
+    // render
+    // ------
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // draw our first triangle
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+    // -------------------------------------------------------------------------------
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
+
+  // glfw: terminate, clearing all previously allocated GLFW resources.
+  // ------------------------------------------------------------------
+  glfwTerminate();
+}
+
+void demo1() {
+  unsigned int indices[] = {
+      0, 1, 3,
+      1, 2, 3};
+  auto ibPtr = std::make_shared<IndicesBuffer>(indices, 6);
+
+  float vertices[] = {
+      -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+      0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+      0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+      0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+      -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+      -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
+      -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+      0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+      0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+      0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+      -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+      -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+      -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+      -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+      -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+      -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+      0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+      0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+      0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+      0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+      0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+      0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+      0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+      0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+      0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+      -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+
+      -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+      0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+      0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+      0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+      -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+      -0.5f, 0.5f, -0.5f, 0.0f, 1.0f};
+  auto vbPtr = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+
+  unsigned int VAO;
+  glGenVertexArrays(1, &VAO);
+  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure
+  // vertex attributes(s).
+  glBindVertexArray(VAO);
+
+  // set vertex attribute
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
+  // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+  // glEnableVertexAttribArray(2);
+
+  unsigned int texture1, texture2;
+  std::string imgPath1, imgPath2, shaderPath1, shaderPath2;
 
 #ifdef WIN32
-    system("chdir");
-    imgPath1 = "..\\..\\..\\resources\\textures\\container.jpg";
-    imgPath2 = "..\\..\\..\\resources\\textures\\awesomeface.jpg";
-    shaderPath1 = "..\\..\\..\\resources\\shaders\\chapter1\\triangle.vs";
-    shaderPath2 = "..\\..\\..\\resources\\shaders\\chapter1\\triangle.fs";
+  system("chdir");
+  imgPath1 = "..\\..\\..\\resources\\textures\\container.jpg";
+  imgPath2 = "..\\..\\..\\resources\\textures\\awesomeface.jpg";
+  shaderPath1 = "..\\..\\..\\resources\\shaders\\chapter1\\triangle.vs";
+  shaderPath2 = "..\\..\\..\\resources\\shaders\\chapter1\\triangle.fs";
 #elif defined __APPLE__
-    system("pwd");
-    imgPath1 = "resources/textures/container.jpg";
-    imgPath2 = "resources/textures/awesomeface.jpg";
-    shaderPath1 = "resources/shaders/chapter1/triangle.vs";
-    shaderPath2 = "resources/shaders/chapter1/triangle.fs";
+  system("pwd");
+  imgPath1 = "resources/textures/container.jpg";
+  imgPath2 = "resources/textures/awesomeface.jpg";
+  shaderPath1 = "resources/shaders/chapter1/triangle.vs";
+  shaderPath2 = "resources/shaders/chapter1/triangle.fs";
 #endif
 
-    loadImg(imgPath1.c_str(), &texture1);
-    loadImg(imgPath2.c_str(), &texture2);
+  loadImg(imgPath1.c_str(), &texture1);
+  loadImg(imgPath2.c_str(), &texture2);
 
-    Shader shader(shaderPath1.c_str(), shaderPath2.c_str());
+  Shader shader(shaderPath1.c_str(), shaderPath2.c_str());
 
-    shader.init();
+  shader.init();
+  shader.use();
+  shader.setInt("ourTexture1", 0);
+  shader.setInt("ourTexture2", 1);
+
+  glm::vec3 cubePositions[] = {
+      glm::vec3(0.0f, 0.0f, 0.0f),
+      glm::vec3(2.0f, 5.0f, -15.0f),
+      glm::vec3(-1.5f, -2.2f, -2.5f),
+      glm::vec3(-3.8f, -2.0f, -12.3f),
+      glm::vec3(2.4f, -0.4f, -3.5f),
+      glm::vec3(-1.7f, 3.0f, -7.5f),
+      glm::vec3(1.3f, -2.0f, -2.5f),
+      glm::vec3(1.5f, 2.0f, -2.5f),
+      glm::vec3(1.5f, 0.2f, -1.5f),
+      glm::vec3(-1.3f, 1.0f, -1.5f)};
+
+  while (!glfwWindowShouldClose(window)) {
+    // input
+    // -----
+    processInput(window);
+
+    // render
+    // ------
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+
+    glBindVertexArray(VAO);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
     shader.use();
-    shader.setInt("ourTexture1", 0);
-    shader.setInt("ourTexture2", 1);
+    shader.setFloat("mixVal", mixVal);
 
-    glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f), 
-        glm::vec3( 2.0f,  5.0f, -15.0f), 
-        glm::vec3(-1.5f, -2.2f, -2.5f),  
-        glm::vec3(-3.8f, -2.0f, -12.3f),  
-        glm::vec3( 2.4f, -0.4f, -3.5f),  
-        glm::vec3(-1.7f,  3.0f, -7.5f),  
-        glm::vec3( 1.3f, -2.0f, -2.5f),  
-        glm::vec3( 1.5f,  2.0f, -2.5f), 
-        glm::vec3( 1.5f,  0.2f, -1.5f), 
-        glm::vec3(-1.3f,  1.0f, -1.5f)  
-    };
+    glm::mat4 view = glm::mat4(1.0f);
+    // 注意，我们将矩阵向我们要进行移动场景的反方向移动。
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    shader.setMat4("view", view);
 
-    while(!glfwWindowShouldClose(window))
-    {
-        // input
-        // -----
-        processInput(window);
+    glm::mat4 projection = glm::mat4(1.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / windowHeight, 0.1f, 100.0f);
+    shader.setMat4("projection", projection);
 
-        // render
-        // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+    for (int i = 0; i < 10; ++i) {
+      glm::mat4 model = glm::mat4(1.0f);
+      model = glm::translate(model, cubePositions[i]);
+      if (i % 3) {
+        float angle = 20.0f * i;
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+      } else {
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(100.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+      }
 
-        glBindVertexArray(VAO); 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+      shader.setMat4("model", model);
 
-        shader.use();
-        shader.setFloat("mixVal", mixVal);
-
-        glm::mat4 view = glm::mat4(1.0f);
-        // 注意，我们将矩阵向我们要进行移动场景的反方向移动。
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); 
-        shader.setMat4("view", view);
-
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / windowHeight, 0.1f, 100.0f);
-        shader.setMat4("projection", projection);
-
-        for (int i=0;i<10;++i) {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            if (i%3){
-                float angle = 20.0f * i; 
-                model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            } else {
-                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(100.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-            }
-
-            shader.setMat4("model", model);
-            
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-        
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+      glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
-    glfwTerminate(); 
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
+
+  glfwTerminate();
 }
 
 void demo2() {
-    unsigned int indices[] = {
-       0, 1, 3,
-       1, 2, 3
-    };
-    auto ibPtr = std::make_shared<IndicesBuffer>(indices, 6);
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
+  unsigned int indices[] = {
+      0, 1, 3,
+      1, 2, 3};
+  auto ibPtr = std::make_shared<IndicesBuffer>(indices, 6);
+  float vertices[] = {
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
 
-        -0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
 
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
 
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
 
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+      -0.5f,
+      -0.5f,
 
-        -0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-    };
-    auto vbPtr = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+      -0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      0.5f,
+      -0.5f,
+      0.5f,
+      -0.5f,
+  };
+  auto vbPtr = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure 
-    // vertex attributes(s).
-    glBindVertexArray(VAO);
+  unsigned int VAO;
+  glGenVertexArrays(1, &VAO);
+  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure
+  // vertex attributes(s).
+  glBindVertexArray(VAO);
 
-    // set vertex attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    //glEnableVertexAttribArray(2);
-
-
-
+  // set vertex attribute
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
+  // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+  // glEnableVertexAttribArray(2);
 }
 
 void init() {
-    glfwInit();
+  glfwInit();
+  glfwSetErrorCallback(error_callback);
 
-    window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", NULL, NULL);
+  // window related
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", NULL, NULL);
 
-    // window related
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  if (window == NULL) {
+    std::cout << "Failed to create GLFW window" << std::endl;
+    glfwTerminate();
+    exit(-1);
+  }
 
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return;
-    }
+  glfwMakeContextCurrent(window);
 
-    glfwMakeContextCurrent(window);
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    std::cout << "Failed to initialize GLAD" << std::endl;
+    exit(-1);
+  }
+  printf("OpenGL Vendor: %s\n", glGetString(GL_VENDOR));
+  printf("OpenGL Renderer: %s\n", glGetString(GL_RENDERER));
+  printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
+  // printf("OpenGL Extensions: %s\n", glGetString(GL_EXTENSIONS));
+  printf("OpenGL SHADING_LANGUAGE_VERSION: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return;
-    }
+  glViewport(0, 0, windowWidth, windowHeight);
+  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+  glfwSetCursorPosCallback(window, mouse_callback);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  // window related end here
 
-    glViewport(0, 0, windowWidth, windowHeight);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    // window related end here
-
-    // OpenGL settings
-    glEnable(GL_DEPTH_TEST);
-    // OpenGL settings end here 
+  // OpenGL settings
+  glEnable(GL_DEPTH_TEST);
+  // OpenGL settings end here
 }

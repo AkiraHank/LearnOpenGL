@@ -5,19 +5,20 @@
 #ifndef OPENGL_TEST_CALLBACKS_H
 #define OPENGL_TEST_CALLBACKS_H
 #include "glad/glad.h"
-#include "glfw-3.3.5/include/GLFW/glfw3.h"
+#include "GLFW/glfw3.h"
 #include <iostream>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height); 
+// callbacks
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void error_callback(int code, const char* msg);
 
-//non-callbacks
-void processInput(GLFWwindow *window);
+// non-callbacks
+void processInput(GLFWwindow* window);
 
-//helpers
+// helpers
 
 unsigned int loadImg(const char* path, unsigned int* tex_id);
 unsigned int loadImg_clamp(const char* path, unsigned int* tex_id);
- 
 
-#endif //OPENGL_TEST_CALLBACKS_H
+#endif // OPENGL_TEST_CALLBACKS_H

@@ -6,7 +6,7 @@
 #include "glm/glm.hpp"
 #include "stdint.h"
 
-//global variables
+// global variables
 extern float mixVal;
 extern float lastX; // last postion of cursor
 extern float lastY;
@@ -25,17 +25,15 @@ extern int windowWidth;
 extern int windowHeight;
 extern GLFWwindow* window;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window)
-{
+void processInput(GLFWwindow* window) {
   float currentFrame = glfwGetTime();
   deltaTime = currentFrame - lastFrame;
   lastFrame = currentFrame;
-  //printf("deltaTime: %.2f\n", deltaTime);
+  // printf("deltaTime: %.2f\n", deltaTime);
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
   }
@@ -56,38 +54,34 @@ void processInput(GLFWwindow* window)
 
   float cameraSpeed = 2.5f * deltaTime;
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-      cameraPos += cameraSpeed * cameraFront;
+    cameraPos += cameraSpeed * cameraFront;
   if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-      cameraPos -= cameraSpeed * cameraFront;
+    cameraPos -= cameraSpeed * cameraFront;
   if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-      cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-      cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
   fflush(stdout);
 }
 
-unsigned int loadImg(const char* path, unsigned int* tex_id)
-{
-  //load texture
+unsigned int loadImg(const char* path, unsigned int* tex_id) {
+  // load texture
   glGenTextures(1, tex_id);
   glBindTexture(GL_TEXTURE_2D, *tex_id);
   // 为当前绑定的纹理对象设置环绕、过滤方式
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   // 加载并生成纹理
   int width, height, nrChannels;
   stbi_set_flip_vertically_on_load(true);
-  unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
-  if (data)
-  {
+  unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+  if (data) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
-  }
-  else
-  {
+  } else {
     std::cout << "Failed to load texture" << std::endl;
     return false;
   }
@@ -95,27 +89,23 @@ unsigned int loadImg(const char* path, unsigned int* tex_id)
   return true;
 }
 
-unsigned int loadImg_clamp(const char* path, unsigned int* tex_id)
-{
-  //load texture
+unsigned int loadImg_clamp(const char* path, unsigned int* tex_id) {
+  // load texture
   glGenTextures(1, tex_id);
   glBindTexture(GL_TEXTURE_2D, *tex_id);
   // 为当前绑定的纹理对象设置环绕、过滤方式
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);   
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   // 加载并生成纹理
   int width, height, nrChannels;
   stbi_set_flip_vertically_on_load(true);
-  unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
-  if (data)
-  {
+  unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+  if (data) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
-  }
-  else
-  {
+  } else {
     std::cout << "Failed to load texture" << std::endl;
     return false;
   }
@@ -124,10 +114,8 @@ unsigned int loadImg_clamp(const char* path, unsigned int* tex_id)
   return true;
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-  if(firstMouse)
-  {
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+  if (firstMouse) {
     lastX = xpos;
     lastY = ypos;
     firstMouse = false;
@@ -142,11 +130,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
   xoffset *= sensitivity;
   yoffset *= sensitivity;
 
-  yaw   += xoffset;
+  yaw += xoffset;
   pitch += yoffset;
-  if(pitch > 89.0f)
-    pitch =  89.0f;
-  if(pitch < -89.0f)
+  if (pitch > 89.0f)
+    pitch = 89.0f;
+  if (pitch < -89.0f)
     pitch = -89.0f;
 
   glm::vec3 front;
@@ -154,4 +142,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
   front.y = sin(glm::radians(pitch));
   front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
   cameraFront = glm::normalize(front);
+}
+
+void error_callback(int code, const char* msg) {
+  {
+    printf("glfw发生错误: %d:%s\n", code, msg);
+    exit(-1);
+  }
 }
