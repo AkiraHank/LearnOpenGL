@@ -66,6 +66,9 @@
     "fstream": "cpp",
     "iomanip": "cpp",
     "queue": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "variant": "cpp"
   }
 }
