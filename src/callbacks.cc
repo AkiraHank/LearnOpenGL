@@ -3,27 +3,27 @@
 //
 #include "callbacks.h"
 #include "stb_image.h"
-#include "glm/glm.hpp"
 #include "stdint.h"
-
-// global variables
-extern float mixVal;
-extern float lastX; // last postion of cursor
-extern float lastY;
-extern float yaw;
-extern float pitch;
-
-extern glm::vec3 cameraPos;
-extern glm::vec3 cameraFront;
-extern glm::vec3 cameraUp;
 
 static float deltaTime = 0.0f; // 当前帧与上一帧的时间差
 static float lastFrame = 0.0f; // 上一帧的时间
 static bool firstMouse = true;
 
-extern int windowWidth;
-extern int windowHeight;
-extern GLFWwindow* window;
+float mixVal = 0.2f;
+float yaw = -90.0f; // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+float pitch = 0.0f;
+float lastX = 400;
+float lastY = 300;
+float fov = 45.0;
+
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+int windowWidth = 800;
+int windowHeight = 600;
+
+GLFWwindow* window = nullptr;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
@@ -144,9 +144,60 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
   cameraFront = glm::normalize(front);
 }
 
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+  if (fov >= 1.0f && fov <= 45.0f)
+    fov -= yoffset;
+  if (fov <= 1.0f)
+    fov = 1.0f;
+  if (fov >= 45.0f)
+    fov = 45.0f;
+}
+
 void error_callback(int code, const char* msg) {
   {
     printf("glfw error: %d:%s\n", code, msg);
     exit(-1);
   }
+}
+
+void init() {
+  glfwInit();
+  glfwSetErrorCallback(error_callback);
+
+  // window related
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+  window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", NULL, NULL);
+
+  if (window == NULL) {
+    std::cout << "Failed to create GLFW window" << std::endl;
+    glfwTerminate();
+    exit(-1);
+  }
+
+  glfwMakeContextCurrent(window);
+
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    std::cout << "Failed to initialize GLAD" << std::endl;
+    exit(-1);
+  }
+  printf("OpenGL Vendor: %s\n", glGetString(GL_VENDOR));
+  printf("OpenGL Renderer: %s\n", glGetString(GL_RENDERER));
+  printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
+  printf("OpenGL SHADING_LANGUAGE_VERSION: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+  // FIXME: this will lead to wrong display area, need to figure out the reason
+  // glViewport(0, 0, windowWidth, windowHeight);
+  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+  glfwSetCursorPosCallback(window, mouse_callback);
+  glfwSetScrollCallback(window, scroll_callback);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  // ====== window related end here ========
+
+  // ======= OpenGL settings
+  // ======= OpenGL settings end here
 }

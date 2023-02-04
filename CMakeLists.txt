@@ -19,7 +19,7 @@ endif()
 
 project(OpenGL_test VERSION 0.1.0)
 
-aux_source_directory(src SRC)
+file(GLOB_RECURSE SRC_DIR_LIST "src/*.cpp" "src/*.c" "src/*.cc")
  
 include_directories(3rdparty include 3rdparty/glfw-3.3.5/include)
 
@@ -34,7 +34,7 @@ else()
     message(STATUS "OPENGL found!")
 endif()
 
-add_executable(OpenGL_test ${SRC})
+add_executable(OpenGL_test ${SRC_DIR_LIST})
 target_link_libraries(OpenGL_test glfw3)
 
 if(APPLE)

@@ -1,6 +1,11 @@
 #include "myShader.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+Shader::Shader(const char* vertexPath, const char* fragmentPath, bool useFile) {
+  if (useFile == false) {
+    this->vertexShaderCode = vertexPath;
+    this->fragShaderCode = fragmentPath;
+    return;
+  }
   // 1. 从文件路径中获取顶点/片段着色器
   std::ifstream vShaderFile;
   std::ifstream fShaderFile;

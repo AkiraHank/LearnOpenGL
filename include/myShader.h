@@ -17,7 +17,7 @@ public:
   unsigned int ID;
   // 构造器读取并构建着色器
   Shader() = delete;
-  Shader(const GLchar* vertexShaderPath, const GLchar* fragmentShaderPath);
+  Shader(const GLchar* vertexShaderPath, const GLchar* fragmentShaderPath, bool useFile = true);
   ~Shader() {
     glDeleteProgram(ID);
   }
