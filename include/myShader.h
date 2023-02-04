@@ -12,7 +12,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 class Shader {
-  public:
+public:
   // 程序ID
   unsigned int ID;
   // 构造器读取并构建着色器
@@ -32,7 +32,7 @@ class Shader {
 
   void clean();
 
-  private:
+private:
   std::string vertexShaderCode;
   std::string fragShaderCode;
 };

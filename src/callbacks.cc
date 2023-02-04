@@ -39,14 +39,14 @@ void processInput(GLFWwindow* window) {
   }
 
   if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-    mixVal += 0.1f;
+    mixVal += 0.01f;
     if (mixVal >= 1.0) {
       mixVal = 1.0f;
     }
   }
 
   if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-    mixVal -= 0.1f;
+    mixVal -= 0.01f;
     if (mixVal <= 0.0f) {
       mixVal = 0.0f;
     }
@@ -146,7 +146,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 void error_callback(int code, const char* msg) {
   {
-    printf("glfw发生错误: %d:%s\n", code, msg);
+    printf("glfw error: %d:%s\n", code, msg);
     exit(-1);
   }
 }

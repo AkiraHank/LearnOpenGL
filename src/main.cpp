@@ -27,7 +27,6 @@ void demo2();
 int main(int argv, char** args) {
   init();
   demo1();
-  // triangle();
   return 0;
 }
 
@@ -108,7 +107,7 @@ void demo1() {
 #elif defined __APPLE__
   system("pwd");
   imgPath1 = "resources/textures/wall.jpg";
-  imgPath2 = "resources/textures/awesomeface.jpg";
+  imgPath2 = "resources/textures/container.jpg";
   shaderPath1 = "resources/shaders/chapter1/triangle.vs";
   shaderPath2 = "resources/shaders/chapter1/triangle.fs";
 #endif
@@ -370,9 +369,9 @@ void triangle() {
       -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // 左下
       0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // 顶部
   };
-  unsigned int VBO, VAO;
-  glGenVertexArrays(1, &VAO);
+  GLuint VBO, VAO;
   glGenBuffers(1, &VBO);
+  glGenVertexArrays(1, &VAO);
   // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
   glBindVertexArray(VAO);
 
@@ -383,12 +382,39 @@ void triangle() {
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
+  //  note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  // ==================== VAO2 =====================
+  float vertices1[] = {
+      // 位置              // 颜色
+      -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // 右下
+      0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // 左下
+      0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f   // 顶部
+  };
+  GLuint VBO1, VAO1;
+  glGenBuffers(1, &VBO1);
+  glGenVertexArrays(1, &VAO1);
+  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+  glBindVertexArray(VAO1);
+
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
   // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  // ==================== VAO2 =====================
 
   // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
   // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-  glBindVertexArray(0);
+  // glBindVertexArray(0);
+  GLuint texture;
+  std::string imgPath1 = "resources/textures/wall.jpg";
+  loadImg(imgPath1.c_str(), &texture);
 
   std::string shaderPath1 = "resources/shaders/chapter0/triangle.vs";
   std::string shaderPath2 = "resources/shaders/chapter0/triangle.fs";
@@ -408,6 +434,9 @@ void triangle() {
 
     // draw our first triangle
     glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     shader.use();
     glDrawArrays(GL_TRIANGLES, 0, 3);
