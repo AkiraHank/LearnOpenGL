@@ -59,7 +59,7 @@ void triangle() {
   std::string shaderPath2 = "resources/shaders/chapter0/triangle.fs";
 
   Shader shader(shaderPath1.c_str(), shaderPath2.c_str());
-  shader.init();
+  shader.compile();
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -112,23 +112,29 @@ void EBO_test() {
                                      "   FragColor = vec4(0.8, 0.8, 0.8, 1.0);\n"
                                      "}\0";
 
-  GLfloat vertices[] = {
-      -0.5f, -0.5f, 0.0f,
-      0.5f, -0.5f, 0.0f,
-      -0.5f, 0.5f, 0.0f,
-      0.5f, 0.5f, 0.0f};
+  GLfloat vertices[8][3] = {
+      {-0.5f, 0.5f, -0.5f},
+      {-0.5f, 0.5f, 0.5f},
+      {0.5f, 0.5f, 0.5f},
+      {0.5f, 0.5f, -0.5f},
+      {-0.5f, -0.5f, -0.5f},
+      {-0.5f, -0.5f, 0.5f},
+      {0.5f, -0.5f, 0.5f},
+      {0.5f, -0.5f, -0.5f}};
 
-  GLfloat texturePoints[] = {
-      -0.5f, -0.5f, // 0 左下
-      0.5f, -0.5f,  // 1 右下
-      0.5f, 0.5f,   // 2 右上
-      -0.5f, 0.5f,  // 3 左上
-  };
-
-  GLuint indices[] = {
-      0, 1, 2, // 第一个三角形的编码
-      1, 2, 3  // 第二个三角形的编码
-  };
+  GLuint indices[12][3] = {
+      {0, 1, 3},
+      {0, 3, 4},
+      {0, 1, 4},
+      {2, 1, 3},
+      {2, 6, 3},
+      {2, 6, 1},
+      {5, 1, 4},
+      {5, 6, 1},
+      {5, 4, 6},
+      {7, 4, 3},
+      {7, 6, 3},
+      {7, 4, 6}};
 
   GLuint VBO, ibo, VAO;
   glGenVertexArrays(1, &VAO);
@@ -144,12 +150,12 @@ void EBO_test() {
   glGenBuffers(1, &ibo);                      //  创建一块 buffer，并将获得的id存在变量buffer中
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); // 说明buffer的用途：将这样的一块 Buffer 用来存变量
                                               // 由于opengl是一个状态机模型，这里glBindBuffer就是当前绑定的绘制对象
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6, indices, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 36, indices, GL_STATIC_DRAW);
 
   // glBindBuffer(GL_ARRAY_BUFFER, 0);
   Shader shader(vertexShaderSource, fragmentShaderSource, false);
 
-  shader.init();
+  shader.compile();
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -160,7 +166,7 @@ void EBO_test() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     shader.use();
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

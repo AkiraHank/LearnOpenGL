@@ -20,15 +20,20 @@ public:
   ~Shader() {
     glDeleteProgram(ID);
   }
-  void init();
+  void compile();
   // 使用/激活程序
   void use();
   // uniform工具函数
   void setBool(const std::string& name, bool value) const;
   void setInt(const std::string& name, int value) const;
   void setFloat(const std::string& name, float value) const;
+  void setMat2(const std::string& name, const glm::mat2& mat) const;
+  void setMat3(const std::string& name, const glm::mat3& mat) const;
   void setMat4(const std::string& name, const glm::mat4&);
-
+  void setVec2(const std::string& name, const glm::vec2& value) const;
+  void setVec2(const std::string& name, float x, float y) const;
+  void setVec3(const std::string& name, const glm::vec3& value) const;
+  void setVec3(const std::string& name, float x, float y, float z) const;
   void clean();
 
 private:

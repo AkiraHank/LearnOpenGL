@@ -71,6 +71,8 @@
     "concepts": "cpp",
     "variant": "cpp",
     "numbers": "cpp",
-    "*.tcc": "cpp"
+    "*.tcc": "cpp",
+    "__memory": "cpp",
+    "filesystem": "cpp"
   }
 }

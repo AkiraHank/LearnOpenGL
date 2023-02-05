@@ -3,6 +3,6 @@
 
 int main(int argv, char** args) {
   init();
-  coord_system();
+  drawLightsTest();
   return 0;
 }
