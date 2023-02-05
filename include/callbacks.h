@@ -7,23 +7,14 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
+#include "Camera.h"
 #include <iostream>
 
 // global vars
 extern GLFWwindow* window;
+extern Camera* camera;
 extern int windowWidth;
 extern int windowHeight;
-
-extern glm::vec3 cameraPos;
-extern glm::vec3 cameraFront;
-extern glm::vec3 cameraUp;
-
-extern float mixVal;
-extern float lastX; // last postion of cursor
-extern float lastY;
-extern float yaw;
-extern float pitch;
-extern float fov;
 
 // callbacks
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
