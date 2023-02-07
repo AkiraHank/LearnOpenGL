@@ -5,85 +5,23 @@
 
 void drawLightsTest() {
   glEnable(GL_DEPTH_TEST);
-
-  // GLfloat vertices[8][3] = {
-  //     {-0.5f, 0.5f, -0.5f},
-  //     {-0.5f, 0.5f, 0.5f},
-  //     {0.5f, 0.5f, 0.5f},
-  //     {0.5f, 0.5f, -0.5f},
-  //     {-0.5f, -0.5f, -0.5f},
-  //     {-0.5f, -0.5f, 0.5f},
-  //     {0.5f, -0.5f, 0.5f},
-  //     {0.5f, -0.5f, -0.5f}};
-  float vertices[36][6] = {
-      {-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-      {0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-      {0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-      {0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-      {-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-      {-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-
-      {-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-      {0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-      {0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-      {0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-      {-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-      {-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-
-      {-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f},
-      {-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f},
-      {-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f},
-      {-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f},
-      {-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f},
-      {-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f},
-
-      {0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f},
-      {0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f},
-      {0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f},
-      {0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f},
-      {0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f},
-      {0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f},
-
-      {-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f},
-      {0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f},
-      {0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f},
-      {0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f},
-      {-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f},
-      {-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f},
-
-      {-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f},
-      {0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f},
-      {0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-      {0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-      {-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-      {-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f}};
-
-  // GLuint indices[12][3] = {
-  //     {0, 1, 3},
-  //     {2, 1, 3},
-  //     {0, 3, 4},
-  //     {7, 4, 3},
-  //     {0, 1, 4},
-  //     {5, 1, 4},
-  //     {2, 6, 3},
-  //     {7, 6, 3},
-  //     {2, 6, 1},
-  //     {5, 6, 1},
-  //     {5, 4, 6},
-  //     {7, 4, 6}};
+  std::vector<GLfloat> vertices = loadVertices("resources/vertices/textureLight");
 
   GLuint VBO, cubeVAO, lightCubeVAO, EBO;
   // vertex buffer for both
   glGenBuffers(1, &VBO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER,
+               vertices.size() * sizeof(GLfloat),
+               &vertices[0],
+               GL_STATIC_DRAW);
 
   // VAO for cube
   glGenVertexArrays(1, &cubeVAO);
   glBindVertexArray(cubeVAO);
   // VBO already bound, so no need to bind VBO here
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
@@ -98,7 +36,7 @@ void drawLightsTest() {
   glBindVertexArray(lightCubeVAO);
   // TODO: supposed to bind VBO here but actually doesn't have to. why?
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
   // vertex and index buffer for lightCube
@@ -122,9 +60,20 @@ void drawLightsTest() {
 
     lightingShader.use();
     lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-    lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+    // lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
     lightingShader.setVec3("lightPos", lightPos);
     lightingShader.setVec3("viewPos", camera->Position);
+    lightingShader.setFloat("material.shininess", 32.0f);
+
+    lightingShader.setVec3("light.ambient", 1.0f, 1.0f, 1.0f); // note that all light colors are set at full intensity
+    lightingShader.setVec3("light.diffuse", 1.0f, 1.0f, 1.0f);
+    lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+    // material properties
+    lightingShader.setVec3("material.ambient", 0.0f, 0.1f, 0.06f);
+    lightingShader.setVec3("material.diffuse", 0.0f, 0.50980392f, 0.50980392f);
+    lightingShader.setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f);
+
     glm::mat4 projection = glm::perspective(
         glm::radians(camera->Zoom),
         (float)windowWidth / (float)windowHeight,

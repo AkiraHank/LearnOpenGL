@@ -22,6 +22,7 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
     MouseSensitivity(SENSITIVITY),
     Zoom(ZOOM) {
   Position = glm::vec3(posX, posY, posZ);
+  originPosition = Position;
   WorldUp = glm::vec3(upX, upY, upZ);
   Yaw = yaw;
   Pitch = pitch;
@@ -44,6 +45,8 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
     Position -= Right * velocity;
   if (direction == RIGHT)
     Position += Right * velocity;
+  if (direction == RESET)
+    Position = originPosition;
 }
 
 // processes input received from a mouse input system. Expects the offset value in both the x and y direction.

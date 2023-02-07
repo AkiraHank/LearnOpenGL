@@ -9,6 +9,9 @@
 #include "glm/glm.hpp"
 #include "Camera.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
 
 // global vars
 extern GLFWwindow* window;
@@ -29,5 +32,6 @@ void init();
 
 unsigned int loadImg(const char* path, unsigned int* tex_id);
 unsigned int loadImg_clamp(const char* path, unsigned int* tex_id);
+std::vector<GLfloat> loadVertices(const std::string& path);
 
 #endif // OPENGL_TEST_CALLBACKS_H

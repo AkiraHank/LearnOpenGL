@@ -53,7 +53,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, bool useFile) {
     this->vertexShaderCode = vShaderStream.str();
     this->fragShaderCode = fShaderStream.str();
   } catch (std::ifstream::failure e) {
-    std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << e.what() << std::endl;
   }
 }
 

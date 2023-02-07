@@ -38,6 +38,8 @@ void processInput(GLFWwindow* window) {
     camera->ProcessKeyboard(LEFT, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     camera->ProcessKeyboard(RIGHT, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    camera->ProcessKeyboard(RESET, deltaTime);
 }
 
 unsigned int loadImg(const char* path, unsigned int* tex_id) {
@@ -160,4 +162,28 @@ void init() {
 
   // ======= OpenGL settings
   // ======= OpenGL settings end here
+}
+
+std::vector<GLfloat> loadVertices(const std::string& path) {
+  std::ifstream verticesFile;
+  // 保证ifstream对象可以抛出异常：
+  verticesFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+  std::vector<GLfloat> ret;
+  try {
+    // 打开文件
+    verticesFile.open(path);
+    std::stringstream verticesStream;
+    // 读取文件的缓冲内容到数据流中
+    verticesStream << verticesFile.rdbuf();
+    // 关闭文件处理器
+    verticesFile.close();
+    while (verticesStream) {
+      GLfloat vertice;
+      verticesStream >> vertice;
+      ret.push_back(vertice);
+    }
+  } catch (std::ifstream::failure e) {
+    std::cout << "ERROR::VERTICES::FILE_NOT_SUCCESFULLY_READ" << e.what() << std::endl;
+  }
+  return ret;
 }
