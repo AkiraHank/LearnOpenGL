@@ -40,24 +40,28 @@ void processInput(GLFWwindow* window) {
     camera->ProcessKeyboard(RIGHT, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
     camera->ProcessKeyboard(RESET, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    camera->ProcessKeyboard(UP, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    camera->ProcessKeyboard(DOWN, deltaTime);
 }
 
 unsigned int loadImg(const char* path, unsigned int* tex_id) {
   // load texture
   glGenTextures(1, tex_id);
-  glBindTexture(GL_TEXTURE_2D, *tex_id);
-  // 为当前绑定的纹理对象设置环绕、过滤方式
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   // 加载并生成纹理
   int width, height, nrChannels;
   stbi_set_flip_vertically_on_load(true);
   unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
   if (data) {
+    glBindTexture(GL_TEXTURE_2D, *tex_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
+    // 为当前绑定的纹理对象设置环绕、过滤方式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   } else {
     std::cout << "Failed to load texture" << std::endl;
     return false;

@@ -6,8 +6,6 @@
 void drawLightsTest() {
   glEnable(GL_DEPTH_TEST);
   std::vector<GLfloat> vertices = loadVertices("resources/vertices/textureLight");
-  std::vector<float> sphereVertices;
-  std::vector<int> sphereIndices;
 
   GLuint VBO, cubeVAO, lightCubeVAO, EBO;
   // vertex buffer for both
@@ -24,8 +22,10 @@ void drawLightsTest() {
   // VBO already bound, so no need to bind VBO here
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(2);
 
   // index buffer for cube
   // glGenBuffers(1, &EBO);
@@ -43,7 +43,10 @@ void drawLightsTest() {
   // 将球横纵划分成50*50的网格
   const int Y_SEGMENTS = 50;
   const int X_SEGMENTS = 50;
-
+  std::vector<float> sphereVertices;
+  std::vector<int> sphereIndices;
+  sphereVertices.reserve(3 * Y_SEGMENTS * X_SEGMENTS);
+  sphereIndices.reserve(6 * Y_SEGMENTS * X_SEGMENTS);
   // 生成球的顶点
   for (int y = 0; y <= Y_SEGMENTS; y++) {
     for (int x = 0; x <= X_SEGMENTS; x++) {
@@ -90,10 +93,27 @@ void drawLightsTest() {
   // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   // glEnableVertexAttribArray(0);
 
+  GLuint diffuseMap;
+  std::string imgPath1 = "resources/textures/wall.jpg";
+  if (!loadImg(imgPath1.c_str(), &diffuseMap)) {
+    return;
+  }
+
   Shader lightingShader("resources/shaders/chapter2/light.vs", "resources/shaders/chapter2/light.fs");
   Shader lightCubeShader("resources/shaders/chapter2/lightCube.vs", "resources/shaders/chapter2/lightCube.fs");
   lightCubeShader.compile();
   lightingShader.compile();
+
+  lightingShader.use();
+  // light properties
+  lightingShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+  lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+  lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+  // material properties
+  lightingShader.setInt("material.diffuse", 0);
+  lightingShader.setFloat("material.shininess", 32.0f);
+  lightingShader.setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f);
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -107,20 +127,9 @@ void drawLightsTest() {
     lightPos.y = 1.0f + cos(glfwGetTime()) * 2.0f;
 
     lightingShader.use();
-    lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     // lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    lightingShader.setVec3("lightPos", lightPos);
     lightingShader.setVec3("viewPos", camera->Position);
-    lightingShader.setFloat("material.shininess", 32.0f);
-
-    lightingShader.setVec3("light.ambient", 1.0f, 1.0f, 1.0f); // note that all light colors are set at full intensity
-    lightingShader.setVec3("light.diffuse", 1.0f, 1.0f, 1.0f);
-    lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-
-    // material properties
-    lightingShader.setVec3("material.ambient", 0.0f, 0.1f, 0.06f);
-    lightingShader.setVec3("material.diffuse", 0.0f, 0.50980392f, 0.50980392f);
-    lightingShader.setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f);
+    lightingShader.setVec3("light.position", lightPos);
 
     glm::mat4 projection = glm::perspective(
         glm::radians(camera->Zoom),
@@ -135,11 +144,15 @@ void drawLightsTest() {
     glm::mat3 model_it = glm::mat3(glm::transpose(glm::inverse(model)));
     lightingShader.setMat3("model_it", model_it);
 
+    // bind diffuse map
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, diffuseMap);
     glBindVertexArray(cubeVAO);
     // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
     glDisable(GL_CULL_FACE);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
+    // light sphere
     lightCubeShader.use();
     lightCubeShader.setMat4("projection", projection);
     lightCubeShader.setMat4("view", view);
