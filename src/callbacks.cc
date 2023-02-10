@@ -50,12 +50,19 @@ unsigned int loadImg(const char* path, unsigned int* tex_id) {
   // load texture
   glGenTextures(1, tex_id);
   // 加载并生成纹理
-  int width, height, nrChannels;
+  int width, height, nrComponents;
   stbi_set_flip_vertically_on_load(true);
-  unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+  unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
   if (data) {
+    GLenum format;
+    if (nrComponents == 1)
+      format = GL_RED;
+    else if (nrComponents == 3)
+      format = GL_RGB;
+    else if (nrComponents == 4)
+      format = GL_RGBA;
     glBindTexture(GL_TEXTURE_2D, *tex_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     // 为当前绑定的纹理对象设置环绕、过滤方式
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
