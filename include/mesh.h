@@ -10,8 +10,6 @@
 
 #include "myShader.h"
 
-using std::string, std::vector;
-
 #define MAX_BONE_INFLUENCE 4
 
 struct Vertex {
@@ -33,20 +31,20 @@ struct Vertex {
 
 struct Texture {
   unsigned int id;
-  string type;
-  string path;
+  std::string type;
+  std::string path;
 };
 
 class Mesh {
 public:
   // mesh Data
-  vector<Vertex> vertices;
-  vector<GLuint> indices;
-  vector<Texture> textures;
+  std::vector<Vertex> vertices;
+  std::vector<GLuint> indices;
+  std::vector<Texture> textures;
   GLuint VAO;
 
   // constructor
-  Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures);
+  Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures);
 
   // render the mesh
   void Draw(Shader& shader);

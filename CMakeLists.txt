@@ -35,7 +35,7 @@ else()
 endif()
 
 add_executable(OpenGL_test ${SRC_DIR_LIST})
-target_link_libraries(OpenGL_test glfw3)
+target_link_libraries(OpenGL_test glfw3 assimp)
 
 if(APPLE)
     target_link_libraries(OpenGL_test "-framework Cocoa" "-framework IOKit" -lpthread)

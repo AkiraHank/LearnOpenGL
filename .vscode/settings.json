@@ -73,7 +73,20 @@
     "numbers": "cpp",
     "*.tcc": "cpp",
     "__memory": "cpp",
-    "filesystem": "cpp"
+    "filesystem": "cpp",
+    "__tree": "cpp",
+    "codecvt": "cpp",
+    "condition_variable": "cpp",
+    "list": "cpp",
+    "map": "cpp",
+    "numeric": "cpp",
+    "random": "cpp",
+    "semaphore": "cpp",
+    "set": "cpp",
+    "thread": "cpp",
+    "memory_resource": "cpp",
+    "stop_token": "cpp",
+    "cinttypes": "cpp"
   },
   "glsl-linter.validatorPath": 
 // 此处要进行修改，修改为你解压后的那个bin文件夹中的.exe程序文件的路径。
