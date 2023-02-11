@@ -5,3 +5,6 @@ void coord_system();
 
 // chapter 2
 void drawLightsTest();
+
+// chapter 3
+void drawAssets();

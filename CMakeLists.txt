@@ -8,7 +8,7 @@ if(APPLE)
     set(CMAKE_C_COMPILER /usr/bin/clang)
     set(CMAKE_CXX_COMPILER /usr/bin/clang++)
     
-    link_directories(3rdparty/glfw-3.3.5/mac-arm)
+    link_directories(3rdparty/glfw-3.3.5/mac-arm bin)
 elseif(WIN32)
     message(STATUS "OS: Windows")
     set(CMAKE_FORCE_C_COMPILER gcc)
@@ -21,7 +21,7 @@ project(OpenGL_test VERSION 0.1.0)
 
 file(GLOB_RECURSE SRC_DIR_LIST "src/*.cpp" "src/*.c" "src/*.cc")
  
-include_directories(3rdparty include 3rdparty/glfw-3.3.5/include)
+include_directories(3rdparty include 3rdparty/glfw-3.3.5/include include/assimp)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
