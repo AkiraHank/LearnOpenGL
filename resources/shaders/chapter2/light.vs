@@ -15,7 +15,6 @@ out vec2 TexCoords;
 void main()
 {
     TexCoords=aTexCoords;
-    
     FragPos=vec3(model*vec4(aPos,1.));
     Normal=model_it*aNormal;
     

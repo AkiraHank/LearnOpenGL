@@ -74,5 +74,21 @@
     "*.tcc": "cpp",
     "__memory": "cpp",
     "filesystem": "cpp"
-  }
+  },
+  "glsl-linter.validatorPath": 
+// 此处要进行修改，修改为你解压后的那个bin文件夹中的.exe程序文件的路径。
+	"usr/local/bin/glslangValidator", 
+"glsl-linter.fileExtensions": {
+    ".fs.glsl": "frag",
+    ".fs": "frag",
+    ".vs.glsl": "vert",
+    ".vs": "vert",
+    ".tes.glsl": "tese",
+    ".tes": "tese",
+    ".tcs.glsl": "tesc",
+    ".tcs": "tesc",
+    ".gs.glsl": "geom",
+    ".gs": "geom",
+}
+
 }

@@ -110,15 +110,30 @@ void drawLightsTest() {
 
   lightingShader.use();
   // light properties
-  lightingShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-  lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-  lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-
+  // point light
+  glm::vec3 pointLightPositions[] = {
+      glm::vec3(-7.7f, 0.2f, 2.0f),
+      glm::vec3(2.3f, -3.3f, -4.0f),
+      glm::vec3(-4.0f, 2.0f, -12.0f),
+      glm::vec3(3.0f, 9.0f, -3.0f)};
+  for (int i = 0; i < 4; ++i) {
+    lightingShader.setVec3("pointLights[" + std::to_string(i) + "].ambient", 0.2f, 0.2f, 0.2f);
+    lightingShader.setVec3("pointLights[" + std::to_string(i) + "].diffuse", 0.5f, 0.5f, 0.5f);
+    lightingShader.setVec3("pointLights[" + std::to_string(i) + "].specular", 1.0f, 1.0f, 1.0f);
+    lightingShader.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0f);
+    lightingShader.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09f);
+    lightingShader.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.032f);
+    lightingShader.setVec3("pointLights[" + std::to_string(i) + "].position", pointLightPositions[i]);
+  }
+  // direct light
+  lightingShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+  lightingShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+  lightingShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+  lightingShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
   // material properties
   lightingShader.setInt("material.diffuse", 0);
   lightingShader.setInt("material.specular", 1);
   lightingShader.setFloat("material.shininess", 32.0f);
-  lightingShader.setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f);
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -127,14 +142,9 @@ void drawLightsTest() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-    lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
-    lightPos.y = 1.0f + cos(glfwGetTime()) * 2.0f;
-
     lightingShader.use();
     // lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
     lightingShader.setVec3("viewPos", camera->Position);
-    lightingShader.setVec3("light.position", lightPos);
 
     glm::mat4 projection = glm::perspective(
         glm::radians(camera->Zoom),
@@ -185,15 +195,16 @@ void drawLightsTest() {
     lightCubeShader.use();
     lightCubeShader.setMat4("projection", projection);
     lightCubeShader.setMat4("view", view);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, lightPos);
-    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-    lightCubeShader.setMat4("model", model);
-
-    glBindVertexArray(lightCubeVAO);
-    glEnable(GL_CULL_FACE);
-    glDrawElements(GL_TRIANGLES, X_SEGMENTS * Y_SEGMENTS * 6, GL_UNSIGNED_INT, 0);
-    // glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (int i = 0; i < 4; ++i) {
+      model = glm::mat4(1.0f);
+      model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+      model = glm::translate(model, pointLightPositions[i]);
+      lightCubeShader.setMat4("model", model);
+      glBindVertexArray(lightCubeVAO);
+      glEnable(GL_CULL_FACE);
+      glDrawElements(GL_TRIANGLES, X_SEGMENTS * Y_SEGMENTS * 6, GL_UNSIGNED_INT, 0);
+      // glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     glfwSwapBuffers(window);
     glfwPollEvents();
