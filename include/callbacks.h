@@ -5,7 +5,7 @@
 #ifndef OPENGL_TEST_CALLBACKS_H
 #define OPENGL_TEST_CALLBACKS_H
 #include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include "glfw-3.3.5/include/GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "Camera.h"
 #include <iostream>
