@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Build and Debug",
             "cwd": "${workspaceFolder}",
-            "program": "build/OpenGL_test",
+            "program": "build/LearnOpengl",
             "args": [],
             "preLaunchTask": "Compile" 
         },

@@ -17,7 +17,7 @@ elseif(WIN32)
     link_directories(bin/win) 
 endif()    
 
-project(OpenGL_test VERSION 0.1.0)
+project(LearnOpengl VERSION 0.1.0)
 
 file(GLOB_RECURSE SRC_DIR_LIST "src/*.cpp" "src/*.c" "src/*.cc")
  
@@ -34,13 +34,13 @@ else()
     message(STATUS "OPENGL found!")
 endif()
 
-add_executable(OpenGL_test ${SRC_DIR_LIST})
-target_link_libraries(OpenGL_test glfw3 assimp)
+add_executable(LearnOpengl ${SRC_DIR_LIST})
+target_link_libraries(LearnOpengl glfw3 assimp)
 
 if(APPLE)
-    target_link_libraries(OpenGL_test "-framework Cocoa" "-framework IOKit" -lpthread)
+    target_link_libraries(LearnOpengl "-framework Cocoa" "-framework IOKit" -lpthread)
 elseif(WIN32)
-    target_link_libraries(OpenGL_test ${OPENGL_LIBRARIES})
+    target_link_libraries(LearnOpengl ${OPENGL_LIBRARIES})
 endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

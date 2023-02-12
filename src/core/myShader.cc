@@ -19,12 +19,12 @@
 // }
 // #define glCheckError() glCheckError_(__FILE__, __LINE__)
 
-void inline checkGLError() {
-  auto ret = glGetError();
-  if (ret) {
-    printf("error %d in %s:%d\n", ret, __FILE__, __LINE__);
+#define checkSetUniformError()                              \
+  auto ret = glGetError();                                  \
+  if (ret) {                                                \
+    printf("error %d in %s:%d\n", ret, __FILE__, __LINE__); \
+    printf("name of uniform: %s\n", name.c_str());          \
   }
-}
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, bool useFile) {
   if (useFile == false) {
@@ -111,50 +111,50 @@ void Shader::use() {
 
 void Shader::setBool(const std::string& name, bool value) const {
   glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
-  checkGLError();
+  checkSetUniformError();
 }
 
 void Shader::setInt(const std::string& name, int value) const {
   glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
-  checkGLError();
+  checkSetUniformError();
 }
 
 void Shader::setFloat(const std::string& name, float value) const {
   glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
-  checkGLError();
+  checkSetUniformError();
 }
 void Shader::setMat2(const std::string& name, const glm::mat2& mat) const {
   glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-  checkGLError();
+  checkSetUniformError();
 }
 
 void Shader::setMat3(const std::string& name, const glm::mat3& mat) const {
   glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-  checkGLError();
+  checkSetUniformError();
 }
 
 void Shader::setMat4(const std::string& name, const glm::mat4& trans) {
   glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(trans));
-  checkGLError();
+  checkSetUniformError();
 }
 
 void Shader::setVec2(const std::string& name, const glm::vec2& value) const {
   glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
-  checkGLError();
+  checkSetUniformError();
 }
 void Shader::setVec2(const std::string& name, float x, float y) const {
   glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
-  checkGLError();
+  checkSetUniformError();
 }
 
 void Shader::setVec3(const std::string& name, const glm::vec3& value) const {
   glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
-  checkGLError();
+  checkSetUniformError();
 }
 
 void Shader::setVec3(const std::string& name, float x, float y, float z) const {
   glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
-  checkGLError();
+  checkSetUniformError();
 }
 
 void Shader::clean() {

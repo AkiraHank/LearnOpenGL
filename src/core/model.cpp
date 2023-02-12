@@ -1,6 +1,7 @@
 #include "model.h"
 #include "callbacks.h"
-void Model::Draw(Shader shader) {
+
+void Model::Draw(Shader& shader) {
   for (unsigned int i = 0; i < meshes.size(); i++) {
     meshes[i].Draw(shader);
   }
@@ -63,15 +64,19 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
       vec.y = mesh->mTextureCoords[0][i].y;
       vertex.TexCoords = vec;
       // tangent
-      vector.x = mesh->mTangents[i].x;
-      vector.y = mesh->mTangents[i].y;
-      vector.z = mesh->mTangents[i].z;
-      vertex.Tangent = vector;
+      if (mesh->mTangents) {
+        vector.x = mesh->mTangents[i].x;
+        vector.y = mesh->mTangents[i].y;
+        vector.z = mesh->mTangents[i].z;
+        vertex.Tangent = vector;
+      }
       // bitangent
-      vector.x = mesh->mBitangents[i].x;
-      vector.y = mesh->mBitangents[i].y;
-      vector.z = mesh->mBitangents[i].z;
-      vertex.Bitangent = vector;
+      if (mesh->mBitangents) {
+        vector.x = mesh->mBitangents[i].x;
+        vector.y = mesh->mBitangents[i].y;
+        vector.z = mesh->mBitangents[i].z;
+        vertex.Bitangent = vector;
+      }
     } else
       vertex.TexCoords = glm::vec2(0.0f, 0.0f);
 
@@ -128,7 +133,9 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
     }
     if (!skip) { // if texture hasn't been loaded already, load it
       Texture texture;
-      loadImg(str.C_Str(), &texture.id);
+      std::string texPath(str.C_Str());
+      texPath = this->directory + "/" + texPath;
+      loadImg(texPath.c_str(), &texture.id);
       // texture.id = TextureFromFile(str.C_Str(), this->directory);
       texture.type = typeName;
       texture.path = str.C_Str();

@@ -3,6 +3,6 @@
 
 int main(int argv, char** args) {
   init();
-  drawLightsTest();
+  drawAssets();
   return 0;
 }

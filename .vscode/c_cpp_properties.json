@@ -3,15 +3,16 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/3rdparty"
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/3rdparty",
+                "${workspaceFolder}/**"
             ],
             "defines": [],
             "macFrameworkPath": [],
-            "compilerPath": "/opt/homebrew/bin/gcc-11",
+            "compilerPath": "/usr/bin/clang++",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "macos-gcc-arm64",
+            "intelliSenseMode": "macos-clang-arm64",
             "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],

@@ -13,7 +13,7 @@ public:
   Model(char* path) {
     loadModel(path);
   }
-  void Draw(Shader shader);
+  void Draw(Shader& shader);
 
 private:
   /*  模型数据  */
