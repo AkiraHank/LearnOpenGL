@@ -18,11 +18,12 @@ void drawAssets() {
   // load models
   // -----------
 
-  // other models
-  // Alhaitham.pmx
-  // yaoyao.pmx
-  // Shogun.pmx
-  // Klee.pmx
+  // MODELS' NAME
+  /// nanosuit.obj
+  /// Alhaitham.pmx
+  /// yaoyao.pmx
+  /// Shogun.pmx
+  /// Klee.pmx
   Model ourModel("resources/objects/Shogun/Shogun.pmx");
 
   // init lights
@@ -36,6 +37,9 @@ void drawAssets() {
     // per-frame time logic
     // --------------------
     glm::vec3 lightPosition(5.8f, 13.8f, 3.8f);
+    lightPosition.x = cos(glfwGetTime()) * 10.0f;
+    lightPosition.z = sin(glfwGetTime()) * 10.0f;
+    // lightPosition.z = 10.0f + cos(glfwGetTime()) * 20.0f;
     // input
     // -----
     processInput(window);
