@@ -17,7 +17,13 @@ void drawAssets() {
   ourShader.compile();
   // load models
   // -----------
-  Model ourModel("resources/objects/nanosuit/nanosuit.obj");
+
+  // other models
+  // Alhaitham.pmx
+  // yaoyao.pmx
+  // Shogun.pmx
+  // Klee.pmx
+  Model ourModel("resources/objects/Shogun/Shogun.pmx");
 
   // init lights
   PointLight pointLight1("resources/shaders/lights/pointLight.vs", "resources/shaders/lights/pointLight.fs");
@@ -43,7 +49,11 @@ void drawAssets() {
     ourShader.use();
 
     // view/projection transformations
-    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(
+        glm::radians(camera->Zoom),
+        (float)windowWidth / (float)windowHeight,
+        0.1f,
+        100.0f);
     glm::mat4 view = camera->GetViewMatrix();
     ourShader.setMat4("projection", projection);
     ourShader.setMat4("view", view);

@@ -9,7 +9,9 @@ void Model::Draw(Shader& shader) {
 
 void Model::loadModel(std::string path) {
   Assimp::Importer import;
-  const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+  // maybe use other aiPostProcessSteps
+  // aiProcess_FlipUVs
+  const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
     std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
@@ -135,6 +137,9 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
       Texture texture;
       std::string texPath(str.C_Str());
       texPath = this->directory + "/" + texPath;
+      while (texPath.find("\\") != std::string::npos) {
+        texPath.replace(texPath.find("\\"), 1, "/");
+      }
       loadImg(texPath.c_str(), &texture.id);
       // texture.id = TextureFromFile(str.C_Str(), this->directory);
       texture.type = typeName;
