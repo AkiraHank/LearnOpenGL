@@ -12,8 +12,10 @@ uniform vec3 pointLightPosition;
 vec3 CalcPointLight(vec3 normal,vec3 viewDir);
 void main()
 {
-  vec3 Normal=texture(texture_normal1,TexCoords).rgb;
-  vec3 norm=normalize(vec3(Normal));
+  // TODO: 这里的法线贴图该怎么用？
+  vec3 normal=texture(texture_normal1,TexCoords).rgb;
+  vec3 norm=normalize(normal*2.-1.);
+  
   vec3 viewDir=normalize(viewPos-FragPos);
   
   vec3 result=CalcPointLight(norm,viewDir);
@@ -28,7 +30,7 @@ vec3 CalcPointLight(vec3 normal,vec3 viewDir)
   float diff=max(dot(normal,lightDir),0.);
   // 镜面光着色
   vec3 reflectDir=reflect(-lightDir,normal);
-  float spec=pow(max(dot(viewDir,reflectDir),0.),64.);
+  float spec=pow(max(dot(viewDir,reflectDir),0.),32.);
   // 衰减
   float dis=length(pointLightPosition-FragPos);
   float attenuation=1./(1.+.09*dis+.032*(dis*dis));

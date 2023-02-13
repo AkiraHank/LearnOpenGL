@@ -18,16 +18,18 @@ void drawAssets() {
   // load models
   // -----------
   Model ourModel("resources/objects/nanosuit/nanosuit.obj");
+
+  // init lights
   PointLight pointLight1("resources/shaders/lights/pointLight.vs", "resources/shaders/lights/pointLight.fs");
   pointLight1.init();
+
   // draw in wireframe
   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-  // render loop
-  // -----------
   while (!glfwWindowShouldClose(window)) {
     // per-frame time logic
     // --------------------
+    glm::vec3 lightPosition(5.8f, 13.8f, 3.8f);
     // input
     // -----
     processInput(window);
@@ -36,7 +38,6 @@ void drawAssets() {
     // ------
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glm::vec3 lightPosition(5.8f, 13.8f, 3.8f);
 
     // don't forget to enable shader before setting uniforms
     ourShader.use();
@@ -56,7 +57,7 @@ void drawAssets() {
     ourShader.setVec3("viewPos", camera->Position);
     ourModel.Draw(ourShader);
 
-    // lights
+    // draw lights
     pointLight1.setMVP(glm::translate(model, lightPosition), view, projection);
     pointLight1.setShiness(32.0);
     pointLight1.draw();

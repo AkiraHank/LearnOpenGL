@@ -2,15 +2,17 @@ cmake_minimum_required(VERSION 3.0.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+EXECUTE_PROCESS(COMMAND uname -m COMMAND tr -d '/' OUTPUT_VARIABLE ARCHITECTURE)
 
 if(APPLE)
     message(STATUS "OS: MacOS")
+    message(STATUS "Architecture: ${ARCHITECTURE}")
     set(CMAKE_C_COMPILER /usr/bin/clang)
     set(CMAKE_CXX_COMPILER /usr/bin/clang++)
-    
-    link_directories(bin/mac-arm)
+    link_directories(bin/mac-arm) 
 elseif(WIN32)
     message(STATUS "OS: Windows")
+    message(STATUS "Architecture: ${ARCHITECTURE}")
     set(CMAKE_FORCE_C_COMPILER gcc)
     set(CMAKE_FORCE_CXX_COMPILER g++)
 
@@ -30,8 +32,6 @@ add_definitions(${OpenGL_DEFINITIONS})
 
 if(NOT OPENGL_FOUND)
     message(ERROR " OPENGL not found!")
-else()
-    message(STATUS "OPENGL found!")
 endif()
 
 add_executable(LearnOpengl ${SRC_DIR_LIST})
