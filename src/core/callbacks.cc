@@ -15,7 +15,6 @@ int windowWidth = 800;
 int windowHeight = 600;
 
 GLFWwindow* window = nullptr;
-Camera* camera = nullptr;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
@@ -31,19 +30,19 @@ void processInput(GLFWwindow* window) {
   lastFrame = currentFrame;
 
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    camera->ProcessKeyboard(FORWARD, deltaTime);
+    Camera::getInstance().ProcessKeyboard(FORWARD, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    camera->ProcessKeyboard(BACKWARD, deltaTime);
+    Camera::getInstance().ProcessKeyboard(BACKWARD, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    camera->ProcessKeyboard(LEFT, deltaTime);
+    Camera::getInstance().ProcessKeyboard(LEFT, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    camera->ProcessKeyboard(RIGHT, deltaTime);
+    Camera::getInstance().ProcessKeyboard(RIGHT, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-    camera->ProcessKeyboard(RESET, deltaTime);
+    Camera::getInstance().ProcessKeyboard(RESET, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    camera->ProcessKeyboard(UP, deltaTime);
+    Camera::getInstance().ProcessKeyboard(UP, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    camera->ProcessKeyboard(DOWN, deltaTime);
+    Camera::getInstance().ProcessKeyboard(DOWN, deltaTime);
 }
 
 unsigned int loadImg(const char* path, unsigned int* tex_id) {
@@ -116,11 +115,11 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
   lastX = xpos;
   lastY = ypos;
 
-  camera->ProcessMouseMovement(xoffset, yoffset);
+  Camera::getInstance().ProcessMouseMovement(xoffset, yoffset);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-  camera->ProcessMouseScroll(static_cast<float>(yoffset));
+  Camera::getInstance().ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 void error_callback(int code, const char* msg) {
@@ -132,7 +131,6 @@ void error_callback(int code, const char* msg) {
 
 void init() {
   // init camera
-  camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
   // =========================
   glfwInit();
   glfwSetErrorCallback(error_callback);

@@ -15,7 +15,6 @@
 
 // global vars
 extern GLFWwindow* window;
-extern Camera* camera;
 extern int windowWidth;
 extern int windowHeight;
 

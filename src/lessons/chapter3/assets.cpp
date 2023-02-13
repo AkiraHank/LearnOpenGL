@@ -29,14 +29,14 @@ void drawAssets() {
   // init lights
   PointLight pointLight1("resources/shaders/lights/pointLight.vs", "resources/shaders/lights/pointLight.fs");
   pointLight1.init();
-
+  Camera::getInstance().setPosition(glm::vec3(0.0f, 10.0f, 10.0f));
   // draw in wireframe
   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   while (!glfwWindowShouldClose(window)) {
     // per-frame time logic
     // --------------------
-    glm::vec3 lightPosition(5.8f, 13.8f, 3.8f);
+    glm::vec3 lightPosition(5.8f, 10.0f, 3.8f);
     lightPosition.x = cos(glfwGetTime()) * 10.0f;
     lightPosition.z = sin(glfwGetTime()) * 10.0f;
     // lightPosition.z = 10.0f + cos(glfwGetTime()) * 20.0f;
@@ -54,11 +54,11 @@ void drawAssets() {
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(
-        glm::radians(camera->Zoom),
+        glm::radians(Camera::getInstance().Zoom),
         (float)windowWidth / (float)windowHeight,
         0.1f,
         100.0f);
-    glm::mat4 view = camera->GetViewMatrix();
+    glm::mat4 view = Camera::getInstance().GetViewMatrix();
     ourShader.setMat4("projection", projection);
     ourShader.setMat4("view", view);
 
@@ -68,7 +68,7 @@ void drawAssets() {
     model = glm::scale(model, glm::vec3(0.8f, 0.8f, 0.8f));     // it's a bit too big for our scene, so scale it down
     ourShader.setMat4("model", model);
     ourShader.setVec3("pointLightPosition", lightPosition);
-    ourShader.setVec3("viewPos", camera->Position);
+    ourShader.setVec3("viewPos", Camera::getInstance().Position);
     ourModel.Draw(ourShader);
 
     // draw lights

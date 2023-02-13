@@ -144,15 +144,15 @@ void drawLightsTest() {
 
     lightingShader.use();
     // lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    lightingShader.setVec3("viewPos", camera->Position);
+    lightingShader.setVec3("viewPos", Camera::getInstance().Position);
 
     glm::mat4 projection = glm::perspective(
-        glm::radians(camera->Zoom),
+        glm::radians(Camera::getInstance().Zoom),
         (float)windowWidth / (float)windowHeight,
         0.1f,
         100.0f);
     lightingShader.setMat4("projection", projection);
-    glm::mat4 view = camera->GetViewMatrix();
+    glm::mat4 view = Camera::getInstance().GetViewMatrix();
     lightingShader.setMat4("view", view);
     glm::mat4 model = glm::mat4(1.0f);
 

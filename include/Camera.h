@@ -42,6 +42,7 @@ public:
   float MouseSensitivity;
   float Zoom;
 
+private:
   // constructor with vectors
   Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
          glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
@@ -50,6 +51,13 @@ public:
 
   // constructor with scalar values
   Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
+
+public:
+  // singleton
+  static Camera& getInstance() {
+    static Camera camera;
+    return camera;
+  }
 
   // returns the view matrix calculated using Euler Angles and the LookAt Matrix
   glm::mat4 GetViewMatrix();
@@ -62,6 +70,8 @@ public:
 
   // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
   void ProcessMouseScroll(float yoffset);
+
+  void setPosition(const glm::vec3& position);
 
   Camera(const Camera& camera) = delete;
   Camera& operator=(const Camera& camera) = delete;
