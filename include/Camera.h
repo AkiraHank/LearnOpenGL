@@ -59,6 +59,9 @@ public:
     return camera;
   }
 
+  Camera(const Camera& camera) = delete;
+  Camera& operator=(const Camera& camera) = delete;
+
   // returns the view matrix calculated using Euler Angles and the LookAt Matrix
   glm::mat4 GetViewMatrix();
 
@@ -72,9 +75,7 @@ public:
   void ProcessMouseScroll(float yoffset);
 
   void setPosition(const glm::vec3& position);
-
-  Camera(const Camera& camera) = delete;
-  Camera& operator=(const Camera& camera) = delete;
+  void setMoveSpeed(GLfloat moveSpeed);
 
 private:
   // calculates the front vector from the Camera's (updated) Euler Angles

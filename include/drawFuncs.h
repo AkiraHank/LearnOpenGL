@@ -8,3 +8,6 @@ void drawLightsTest();
 
 // chapter 3
 void drawAssets();
+
+// chapter 4
+void depthTest();

@@ -2,5 +2,4 @@
 *.o
 /zips
 /out
-/.vs
 /xcode

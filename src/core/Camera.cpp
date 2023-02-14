@@ -98,3 +98,7 @@ void Camera::updateCameraVectors() {
 void Camera::setPosition(const glm::vec3& position) {
   this->Position = position;
 }
+
+void Camera::setMoveSpeed(GLfloat moveSpeed) {
+  this->MovementSpeed = moveSpeed;
+}

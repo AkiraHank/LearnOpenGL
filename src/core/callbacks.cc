@@ -69,7 +69,7 @@ unsigned int loadImg(const char* path, unsigned int* tex_id) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   } else {
-    std::cout << "Failed to load texture" << std::endl;
+    std::cout << "Failed to load texture: " << path << std::endl;
     return false;
   }
   stbi_image_free(data);
@@ -93,7 +93,7 @@ unsigned int loadImg_clamp(const char* path, unsigned int* tex_id) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
   } else {
-    std::cout << "Failed to load texture" << std::endl;
+    std::cout << "Failed to load texture: " << path << std::endl;
     return false;
   }
   stbi_image_free(data);
