@@ -6,7 +6,10 @@
 #include "lights.h"
 #include <iostream>
 
-void depthTest() {
+void stencilTest() {
+}
+
+void depthAndStencilTest() {
   glEnable(GL_DEPTH_TEST);
   std::vector<GLfloat> vertices = loadVertices("resources/vertices/textureLight");
 

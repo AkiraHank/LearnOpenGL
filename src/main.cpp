@@ -3,6 +3,8 @@
 
 int main(int argv, char** args) {
   init();
-  depthTest();
+  drawLightsTest();
+  // drawAssets();
+  // depthAndStencilTest();
   return 0;
 }

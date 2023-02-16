@@ -10,4 +10,5 @@ void drawLightsTest();
 void drawAssets();
 
 // chapter 4
-void depthTest();
+void depthAndStencilTest();
+void stencilTest();

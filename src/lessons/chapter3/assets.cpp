@@ -24,7 +24,7 @@ void drawAssets() {
   /// yaoyao.pmx
   /// Shogun.pmx
   /// Klee.pmx
-  Model ourModel("resources/objects/Shogun/Shogun.pmx");
+  Model ourModel("resources/objects/yaoyao/yaoyao.pmx");
 
   // init lights
   PointLight pointLight1("resources/shaders/lights/pointLight.vs", "resources/shaders/lights/pointLight.fs");
