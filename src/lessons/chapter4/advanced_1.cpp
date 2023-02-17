@@ -6,9 +6,6 @@
 #include "lights.h"
 #include <iostream>
 
-void stencilTest() {
-}
-
 void depthAndStencilTest() {
   glEnable(GL_DEPTH_TEST);
   std::vector<GLfloat> vertices = loadVertices("resources/vertices/textureLight");
@@ -58,19 +55,39 @@ void depthAndStencilTest() {
     return;
   }
 
-  Shader shader("resources/shaders/chapter4/depth.vs", "resources/shaders/chapter4/depth.fs");
+  Shader shader("resources/shaders/chapter4/stencil_testing.vs", "resources/shaders/chapter4/stencil_testing.fs");
+  Shader shaderSingleColor(
+      "resources/shaders/chapter4/stencil_testing.vs",
+      "resources/shaders/chapter4/stencil_single_color.fs");
+  shaderSingleColor.compile();
   shader.compile();
   shader.use();
   shader.setInt("texture1", 0);
+  glEnable(GL_STENCIL_TEST);
+  glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
 
     // render
     // ------
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+    // floor
+    glStencilMask(0x00);
+    shader.use();
+    glBindVertexArray(planeVAO);
+    glBindTexture(GL_TEXTURE_2D, floorTexture);
+    shader.setMat4("model", glm::mat4(1.0f));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
+    // first render pass: normal cubes, writing 1s to the stencil buffer
+    // ---------------------------------------------------------------------------------------------------------------------
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilMask(0xFF);
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = Camera::getInstance().GetViewMatrix();
     glm::mat4 projection = glm::perspective(
@@ -80,7 +97,6 @@ void depthAndStencilTest() {
         100.0f);
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
-    // cubes
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
@@ -91,13 +107,33 @@ void depthAndStencilTest() {
     model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
     shader.setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    // floor
-    glBindVertexArray(planeVAO);
-    glBindTexture(GL_TEXTURE_2D, floorTexture);
-    shader.setMat4("model", glm::mat4(1.0f));
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
 
+    // second render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
+    // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing
+    // the objects' size differences, making it look like borders.
+    // ---------------------------------------------------------------------------------------------------------------------
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilMask(0x00);
+    glDisable(GL_DEPTH_TEST);
+    shaderSingleColor.use();
+    shaderSingleColor.setMat4("view", view);
+    shaderSingleColor.setMat4("projection", projection);
+    float scale = 1.1f;
+    // cubes
+    glBindVertexArray(cubeVAO);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+    model = glm::scale(model, glm::vec3(scale, scale, scale));
+    shaderSingleColor.setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(scale, scale, scale));
+    shaderSingleColor.setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 0, 0xFF);
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
     glfwSwapBuffers(window);
