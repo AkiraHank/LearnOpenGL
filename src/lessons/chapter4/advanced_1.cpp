@@ -8,21 +8,14 @@
 
 void depthAndStencilTest() {
   glEnable(GL_DEPTH_TEST);
+
   std::vector<GLfloat> vertices = loadVertices("resources/vertices/textureLight");
-
   GLuint cubeVBO, cubeVAO, lightCubeVAO, EBO;
-  // vertex buffer for both
-  glGenBuffers(1, &cubeVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-  glBufferData(GL_ARRAY_BUFFER,
-               vertices.size() * sizeof(GLfloat),
-               &vertices[0],
-               GL_STATIC_DRAW);
-
   // VAO for cube
   glGenVertexArrays(1, &cubeVAO);
   glBindVertexArray(cubeVAO);
-  // VBO already bound, so no need to bind VBO here
+  // vertex buffer for cube
+  VertexBuffer cubeVB(&vertices[0], vertices.size() * sizeof(GLfloat));
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
   glEnableVertexAttribArray(0);
@@ -31,21 +24,26 @@ void depthAndStencilTest() {
   std::vector<GLfloat> planeVertices = loadVertices("resources/vertices/planeVertices");
   unsigned int planeVAO, planeVBO;
   glGenVertexArrays(1, &planeVAO);
-  glGenBuffers(1, &planeVBO);
   glBindVertexArray(planeVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-  glBufferData(
-      GL_ARRAY_BUFFER,
-      planeVertices.size() * sizeof(GLfloat),
-      &planeVertices[0],
-      GL_STATIC_DRAW);
-  glEnableVertexAttribArray(0);
+  VertexBuffer planeVB(&planeVertices[0], planeVertices.size() * sizeof(GLfloat));
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-  glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
   glBindVertexArray(0);
 
-  GLuint cubeTexture, floorTexture;
+  std::vector<GLfloat> transparentVertices = loadVertices("resources/vertices/grass");
+  unsigned int grassVAO, grassVBO;
+  glGenVertexArrays(1, &grassVAO);
+  glBindVertexArray(grassVAO);
+  VertexBuffer grassVB(&transparentVertices[0], transparentVertices.size() * sizeof(GLfloat));
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+  glBindVertexArray(0);
+
+  GLuint cubeTexture, floorTexture, grassTexture;
   std::string imgPath1 = "resources/textures/container2.png";
   if (!loadImg(imgPath1.c_str(), &cubeTexture)) {
     return;
@@ -54,17 +52,28 @@ void depthAndStencilTest() {
   if (!loadImg(imgPath2.c_str(), &floorTexture)) {
     return;
   }
+  std::string imgPath3 = "resources/textures/grass.png";
+  if (!loadImg(imgPath3.c_str(), &grassTexture)) {
+    return;
+  }
 
   Shader shader("resources/shaders/chapter4/stencil_testing.vs", "resources/shaders/chapter4/stencil_testing.fs");
-  Shader shaderSingleColor(
-      "resources/shaders/chapter4/stencil_testing.vs",
-      "resources/shaders/chapter4/stencil_single_color.fs");
-  shaderSingleColor.compile();
+  // Shader shaderSingleColor(
+  //     "resources/shaders/chapter4/stencil_testing.vs",
+  //     "resources/shaders/chapter4/stencil_single_color.fs");
+  // shaderSingleColor.compile();
   shader.compile();
   shader.use();
   shader.setInt("texture1", 0);
-  glEnable(GL_STENCIL_TEST);
-  glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+  // glEnable(GL_STENCIL_TEST);
+  // glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+  std::vector<glm::vec3> vegetation{
+      glm::vec3(-1.5f, 0.0f, -2.48f),
+      glm::vec3(1.5f, 0.0f, 3.51f),
+      glm::vec3(2.0f, 0.0f, 3.7f),
+      glm::vec3(-2.3f, 0.0f, -2.3f),
+      glm::vec3(2.5f, 0.0f, -2.6f)};
 
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
@@ -73,10 +82,10 @@ void depthAndStencilTest() {
     // ------
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // floor
-    glStencilMask(0x00);
+    // glStencilMask(0x00);
     shader.use();
     glBindVertexArray(planeVAO);
     glBindTexture(GL_TEXTURE_2D, floorTexture);
@@ -84,10 +93,7 @@ void depthAndStencilTest() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
-    // first render pass: normal cubes, writing 1s to the stencil buffer
-    // ---------------------------------------------------------------------------------------------------------------------
-    glStencilFunc(GL_ALWAYS, 1, 0xFF);
-    glStencilMask(0xFF);
+    // mvp matrixs
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = Camera::getInstance().GetViewMatrix();
     glm::mat4 projection = glm::perspective(
@@ -95,6 +101,13 @@ void depthAndStencilTest() {
         (float)windowWidth / (float)windowHeight,
         0.1f,
         100.0f);
+
+    // first render pass: normal cubes, writing 1s to the stencil buffer
+    // ---------------------------------------------------------------------------------------------------------------------
+    // glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    // glStencilMask(0xFF);
+    shader.use();
+
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
     glBindVertexArray(cubeVAO);
@@ -108,41 +121,53 @@ void depthAndStencilTest() {
     shader.setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
+    // grass
+    shader.use();
+    glBindVertexArray(grassVAO);
+    glBindTexture(GL_TEXTURE_2D, grassTexture);
+    for (const auto& pos : vegetation) {
+      model = glm::mat4(1.0f);
+      model = glm::translate(model, pos);
+      shader.setMat4("model", model);
+      glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+    glBindVertexArray(0);
+
     // second render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
     // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing
     // the objects' size differences, making it look like borders.
     // ---------------------------------------------------------------------------------------------------------------------
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilMask(0x00);
-    glDisable(GL_DEPTH_TEST);
-    shaderSingleColor.use();
-    shaderSingleColor.setMat4("view", view);
-    shaderSingleColor.setMat4("projection", projection);
-    float scale = 1.1f;
-    // cubes
-    glBindVertexArray(cubeVAO);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-    model = glm::scale(model, glm::vec3(scale, scale, scale));
-    shaderSingleColor.setMat4("model", model);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(scale, scale, scale));
-    shaderSingleColor.setMat4("model", model);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
-    glStencilMask(0xFF);
-    glStencilFunc(GL_ALWAYS, 0, 0xFF);
-    // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+    // glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    // glStencilMask(0x00);
+    // glDisable(GL_DEPTH_TEST);
+    // shaderSingleColor.use();
+    // shaderSingleColor.setMat4("view", view);
+    // shaderSingleColor.setMat4("projection", projection);
+    // float scale = 1.1f;
+
+    // // borders
+    // glBindVertexArray(cubeVAO);
+    // model = glm::mat4(1.0f);
+    // model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+    // model = glm::scale(model, glm::vec3(scale, scale, scale));
+    // shaderSingleColor.setMat4("model", model);
+    // glDrawArrays(GL_TRIANGLES, 0, 36);
+    // model = glm::mat4(1.0f);
+    // model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+    // model = glm::scale(model, glm::vec3(scale, scale, scale));
+    // shaderSingleColor.setMat4("model", model);
+    // glDrawArrays(GL_TRIANGLES, 0, 36);
+    // glBindVertexArray(0);
+    // glStencilMask(0xFF);
+    // glStencilFunc(GL_ALWAYS, 0, 0xFF);
+    /// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
   glDeleteVertexArrays(1, &cubeVAO);
   glDeleteVertexArrays(1, &planeVAO);
-  glDeleteBuffers(1, &cubeVBO);
-  glDeleteBuffers(1, &planeVBO);
+  glDeleteBuffers(1, &grassVAO);
 
   glfwTerminate();
 }

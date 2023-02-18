@@ -50,8 +50,22 @@ unsigned int loadImg(const char* path, unsigned int* tex_id) {
   glGenTextures(1, tex_id);
   // 加载并生成纹理
   int width, height, nrComponents;
-  stbi_set_flip_vertically_on_load(true);
+  stbi_set_flip_vertically_on_load(false);
   unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
+
+  // if (nrComponents == 4)
+  //   for (int y = 0; y < height; y++) {
+  //     for (int x = 0; x < width; x++) {
+  //       unsigned char* pixelOffset = data + (x + y * width) * nrComponents;
+
+  //       unsigned char r = pixelOffset[0];
+  //       unsigned char g = pixelOffset[1];
+  //       unsigned char b = pixelOffset[2];
+  //       unsigned char a = nrComponents >= 4 ? pixelOffset[3] : 0xff;
+
+  //       std::cout << (int)r << " " << (int)g << " " << (int)b << " " << (int)a << std::endl;
+  //     }
+  //   }
   if (data) {
     GLenum format;
     if (nrComponents == 1)
@@ -64,8 +78,8 @@ unsigned int loadImg(const char* path, unsigned int* tex_id) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     // 为当前绑定的纹理对象设置环绕、过滤方式
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   } else {

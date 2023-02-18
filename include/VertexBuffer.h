@@ -10,4 +10,6 @@ public:
 
   void bind() const;
   void unbind() const;
+
+  VertexBuffer(const VertexBuffer& vertexBuffer) = delete;
 };
