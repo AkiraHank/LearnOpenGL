@@ -10,17 +10,18 @@
 void depthAndStencilTest() {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
+  glEnable(GL_CULL_FACE);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  std::vector<GLfloat> vertices = loadVertices("resources/vertices/textureLight");
+  std::vector<GLfloat> vertices = loadVertices("resources/vertices/cubeVertices");
   GLuint cubeVBO, cubeVAO, lightCubeVAO, EBO;
   // VAO for cube
   glGenVertexArrays(1, &cubeVAO);
   glBindVertexArray(cubeVAO);
   // vertex buffer for cube
   VertexBuffer cubeVB(&vertices[0], vertices.size() * sizeof(GLfloat));
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
