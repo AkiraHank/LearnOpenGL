@@ -4,10 +4,13 @@
 #include "VertexBuffer.h"
 #include "model.h"
 #include "lights.h"
+#include "map"
 #include <iostream>
 
 void depthAndStencilTest() {
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   std::vector<GLfloat> vertices = loadVertices("resources/vertices/textureLight");
   GLuint cubeVBO, cubeVAO, lightCubeVAO, EBO;
@@ -44,7 +47,7 @@ void depthAndStencilTest() {
   glBindVertexArray(0);
 
   GLuint cubeTexture, floorTexture, grassTexture;
-  std::string imgPath1 = "resources/textures/container2.png";
+  std::string imgPath1 = "resources/textures/container.jpg";
   if (!loadImg(imgPath1.c_str(), &cubeTexture)) {
     return;
   }
@@ -52,7 +55,7 @@ void depthAndStencilTest() {
   if (!loadImg(imgPath2.c_str(), &floorTexture)) {
     return;
   }
-  std::string imgPath3 = "resources/textures/grass.png";
+  std::string imgPath3 = "resources/textures/blending_transparent_window.png";
   if (!loadImg(imgPath3.c_str(), &grassTexture)) {
     return;
   }
@@ -125,9 +128,14 @@ void depthAndStencilTest() {
     shader.use();
     glBindVertexArray(grassVAO);
     glBindTexture(GL_TEXTURE_2D, grassTexture);
-    for (const auto& pos : vegetation) {
+    std::map<float, glm::vec3> sorted;
+    for (unsigned int i = 0; i < vegetation.size(); i++) {
+      float distance = glm::length(Camera::getInstance().Position - vegetation[i]);
+      sorted[distance] = vegetation[i];
+    }
+    for (auto pos = sorted.rbegin(); pos != sorted.rend(); ++pos) {
       model = glm::mat4(1.0f);
-      model = glm::translate(model, pos);
+      model = glm::translate(model, pos->second);
       shader.setMat4("model", model);
       glDrawArrays(GL_TRIANGLES, 0, 6);
     }

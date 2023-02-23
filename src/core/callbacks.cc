@@ -53,9 +53,10 @@ unsigned int loadImg(const char* path, unsigned int* tex_id) {
   stbi_set_flip_vertically_on_load(false);
   unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
 
-  // if (nrComponents == 4)
-  //   for (int y = 0; y < height; y++) {
-  //     for (int x = 0; x < width; x++) {
+  // if (nrComponents == 4) {
+  //   std::cout << path << std::endl;
+  //   for (int y = 0; y < height / 20; y++) {
+  //     for (int x = 0; x < width / 20; x++) {
   //       unsigned char* pixelOffset = data + (x + y * width) * nrComponents;
 
   //       unsigned char r = pixelOffset[0];
@@ -66,6 +67,8 @@ unsigned int loadImg(const char* path, unsigned int* tex_id) {
   //       std::cout << (int)r << " " << (int)g << " " << (int)b << " " << (int)a << std::endl;
   //     }
   //   }
+  // }
+
   if (data) {
     GLenum format;
     if (nrComponents == 1)

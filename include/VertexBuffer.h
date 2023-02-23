@@ -12,4 +12,5 @@ public:
   void unbind() const;
 
   VertexBuffer(const VertexBuffer& vertexBuffer) = delete;
+  VertexBuffer& operator=(const VertexBuffer& vertexBuffer) = delete;
 };
