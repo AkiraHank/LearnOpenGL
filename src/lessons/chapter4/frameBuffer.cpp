@@ -7,7 +7,7 @@
 #include "map"
 #include <iostream>
 
-void depthAndStencilTest() {
+void frameBuffer() {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
   glEnable(GL_CULL_FACE);

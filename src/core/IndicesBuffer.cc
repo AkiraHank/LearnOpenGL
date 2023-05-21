@@ -1,26 +1,21 @@
 #include "IndicesBuffer.h"
-#include <iostream>
-#include "glad/glad.h" // °üº¬gladÀ´»ñÈ¡ËùÓÐµÄ±ØÐëOpenGLÍ·ÎÄ¼þ
+#include "glad/glad.h" // ï¿½ï¿½ï¿½ï¿½gladï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ÐµÄ±ï¿½ï¿½ï¿½OpenGLÍ·ï¿½Ä¼ï¿½
 
-IndicesBuffer::IndicesBuffer(const unsigned int* data, unsigned int count)
-  :m_count(count)
-{
+IndicesBuffer::IndicesBuffer(const unsigned int* data, unsigned int count) :
+    m_count(count) {
   glGenBuffers(1, &m_renderID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_renderID);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
 }
 
-IndicesBuffer::~IndicesBuffer()
-{
+IndicesBuffer::~IndicesBuffer() {
   glDeleteBuffers(1, &m_renderID);
 }
 
-void IndicesBuffer::bind() const
-{
+void IndicesBuffer::bind() const {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_renderID);
 }
 
-void IndicesBuffer::unbind() const
-{
+void IndicesBuffer::unbind() const {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
