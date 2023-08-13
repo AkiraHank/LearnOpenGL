@@ -12,11 +12,9 @@
 
 class Shader {
 public:
-  // 程序ID
-  unsigned int ID;
   // 构造器读取并构建着色器
   Shader() = delete;
-  Shader(const GLchar* vertexShaderPath, const GLchar* fragmentShaderPath, bool useFile = true);
+  Shader(const GLchar* vertexShaderPath, const GLchar* fragmentShaderPath, const GLchar* geometryShaderPath = nullptr, bool useFile = true);
   ~Shader() {
     glDeleteProgram(ID);
   }
@@ -36,9 +34,16 @@ public:
   void setVec3(const std::string& name, float x, float y, float z) const;
   void clean();
 
+  unsigned int getID() {
+    return this->ID;
+  }
+
 private:
+  // 程序ID
+  unsigned int ID = -1;
   std::string vertexShaderCode;
   std::string fragShaderCode;
+  std::string geometryShaderCode;
 };
 
 #endif

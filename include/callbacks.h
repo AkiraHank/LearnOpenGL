@@ -32,5 +32,6 @@ void init();
 unsigned int loadImg(const char* path, unsigned int* tex_id);
 unsigned int loadImg_clamp(const char* path, unsigned int* tex_id);
 std::vector<GLfloat> loadVertices(const std::string& path);
+unsigned int loadCubemap(std::vector<std::string> faces, GLuint* textureID);
 
 #endif // OPENGL_TEST_CALLBACKS_H

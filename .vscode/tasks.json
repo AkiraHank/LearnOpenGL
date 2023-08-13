@@ -7,7 +7,7 @@
                 "cwd": "${workspaceFolder}/build"
             },
             "type": "shell",
-            "command": "cmake .. && make"
+            "command": "/opt/homebrew/bin/cmake .. && make"
         },
         {
             "label": "test",

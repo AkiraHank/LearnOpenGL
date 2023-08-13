@@ -4,9 +4,24 @@
 void triangle() {
   float vertices[] = {
       // 位置              // 颜色
-      0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // 右下
-      -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // 左下
-      0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // 顶部
+      0.5f,
+      -0.5f,
+      0.0f,
+      1.0f,
+      0.0f,
+      0.0f, // 右下
+      -0.5f,
+      -0.5f,
+      0.0f,
+      0.0f,
+      1.0f,
+      0.0f, // 左下
+      0.0f,
+      0.5f,
+      0.0f,
+      0.0f,
+      0.0f,
+      1.0f // 顶部
   };
   GLuint VBO, VAO;
   glGenBuffers(1, &VBO);
@@ -27,9 +42,24 @@ void triangle() {
   // ==================== VAO2 =====================
   float vertices1[] = {
       // 位置              // 颜色
-      -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // 右下
-      0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // 左下
-      0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f   // 顶部
+      -0.5f,
+      0.5f,
+      0.0f,
+      0.0f,
+      1.0f,
+      0.0f, // 右下
+      0.0f,
+      -0.5f,
+      0.0f,
+      1.0f,
+      0.0f,
+      0.0f, // 左下
+      0.5f,
+      0.5f,
+      0.0f,
+      0.0f,
+      0.0f,
+      1.0f // 顶部
   };
   GLuint VBO1, VAO1;
   glGenBuffers(1, &VBO1);
@@ -153,7 +183,7 @@ void EBO_test() {
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 36, indices, GL_STATIC_DRAW);
 
   // glBindBuffer(GL_ARRAY_BUFFER, 0);
-  Shader shader(vertexShaderSource, fragmentShaderSource, false);
+  Shader shader(vertexShaderSource, fragmentShaderSource, nullptr, false);
 
   shader.compile();
 

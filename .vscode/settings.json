@@ -86,7 +86,8 @@
     "thread": "cpp",
     "memory_resource": "cpp",
     "stop_token": "cpp",
-    "cinttypes": "cpp"
+    "cinttypes": "cpp",
+    "__verbose_abort": "cpp"
   },
   "glsl-linter.validatorPath": 
 // 此处要进行修改，修改为你解压后的那个bin文件夹中的.exe程序文件的路径。

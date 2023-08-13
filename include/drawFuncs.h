@@ -11,4 +11,8 @@ void drawAssets();
 
 // chapter 4
 void depthAndStencilTest();
-void stencilTest();
+void frameBuffer();
+void skybox();
+void advancedGLSL();
+void geometryShader();
+void instancing();
