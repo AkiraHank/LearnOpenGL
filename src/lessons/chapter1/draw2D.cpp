@@ -1,4 +1,3 @@
-#include "callbacks.h"
 #include "myShader.h"
 
 void triangle() {

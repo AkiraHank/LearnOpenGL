@@ -1,4 +1,3 @@
-#include "callbacks.h"
 #include "myShader.h"
 #include "IndicesBuffer.h"
 #include "VertexBuffer.h"
@@ -10,7 +9,7 @@
 void frameBuffer() {
   // cube
   std::vector<GLfloat> vertices = loadVertices("resources/vertices/cubeVertices");
-  GLuint cubeVBO, cubeVAO, lightCubeVAO, EBO;
+  GLuint cubeVAO;
   // VAO for cube
   glGenVertexArrays(1, &cubeVAO);
   glBindVertexArray(cubeVAO);
@@ -155,9 +154,6 @@ void frameBuffer() {
   glDeleteVertexArrays(1, &cubeVAO);
   glDeleteVertexArrays(1, &planeVAO);
   glDeleteVertexArrays(1, &quadVAO);
-  glDeleteBuffers(1, &cubeVBO);
-  glDeleteBuffers(1, &planeVBO);
-  glDeleteBuffers(1, &quadVBO);
   glDeleteRenderbuffers(1, &rbo);
   glDeleteFramebuffers(1, &fbo);
 

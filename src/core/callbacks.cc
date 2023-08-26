@@ -51,7 +51,7 @@ unsigned int loadImg(const char* path, unsigned int* tex_id) {
   // 加载并生成纹理
   int width, height, nrComponents;
   // 设置纹理加载时是否颠倒
-  stbi_set_flip_vertically_on_load(false);
+  stbi_set_flip_vertically_on_load(true);
   unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
 
   // if (nrComponents == 4) {
@@ -111,7 +111,7 @@ unsigned int loadImg_clamp(const char* path, unsigned int* tex_id) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
   } else {
-    std::cout << "Failed to load texture: " << path << std::endl;
+    std::cout << RED "Failed to load texture: " << path << NONE;
     return false;
   }
   stbi_image_free(data);
@@ -142,7 +142,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
 void error_callback(int code, const char* msg) {
   {
-    printf("glfw error: %d:%s\n", code, msg);
+    printf(RED "glfw error: %d:%s" NONE, code, msg);
     exit(-1);
   }
 }
@@ -163,7 +163,7 @@ void init() {
   window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", NULL, NULL);
 
   if (window == NULL) {
-    std::cout << "Failed to create GLFW window" << std::endl;
+    std::cout << RED "Failed to create GLFW window" << NONE;
     glfwTerminate();
     exit(-1);
   }
@@ -171,7 +171,7 @@ void init() {
   glfwMakeContextCurrent(window);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cout << "Failed to initialize GLAD" << std::endl;
+    std::cout << RED "Failed to initialize GLAD" << NONE;
     exit(-1);
   }
   printf("OpenGL Vendor: %s\n", glGetString(GL_VENDOR));

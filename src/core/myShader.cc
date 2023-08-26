@@ -1,4 +1,5 @@
 #include "myShader.h"
+#include "callbacks.h"
 // GLenum glCheckError_(const char* file, int line) {
 //   GLenum errorCode;
 //   while ((errorCode = glGetError()) != GL_NO_ERROR) {
@@ -18,12 +19,20 @@
 // }
 // #define glCheckError() glCheckError_(__FILE__, __LINE__)
 
-#define checkSetUniformError()                              \
-  auto ret = glGetError();                                  \
-  if (ret) {                                                \
-    printf("error %d in %s:%d\n", ret, __FILE__, __LINE__); \
-    printf("name of uniform: %s\n", name.c_str());          \
+#define checkSetUniformError()                                           \
+  auto ret = glGetError();                                               \
+  if (ret) {                                                             \
+    printf(LIGHT_RED "error %d in %s:%d" NONE, ret, __FILE__, __LINE__); \
+    printf("name of uniform: %s\n", name.c_str());                       \
   }
+
+#define checkShaderCompileError()                              \
+  std::cout << RED "ERROR::SHADER::VERTEX::COMPILATION_FAILED" \
+            << infoLog << NONE;
+
+#define checkShaderLinkingError()                          \
+  std::cout << RED "ERROR::SHADER::VERTEX::LINKING_FAILED" \
+            << infoLog << NONE;
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const GLchar* geometryShaderPath, bool useFile) {
   if (useFile == false) {
@@ -53,7 +62,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const GLchar* g
     this->vertexShaderCode = vShaderStream.str();
     this->fragShaderCode = fShaderStream.str();
   } catch (std::ifstream::failure e) {
-    std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << e.what() << std::endl;
+    std::cout << RED "ERROR::SHADER::FILE_OT_SUCCESFULLY_READ" << e.what() << NONE;
   }
 
   if (geometryShaderPath != nullptr) {
@@ -71,7 +80,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const GLchar* g
       // 转换数据流到string
       this->geometryShaderCode = gShaderStream.str();
     } catch (std::ifstream::failure e) {
-      std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << e.what() << std::endl;
+      std::cout << RED "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << e.what() << NONE;
     }
   }
 }
@@ -90,8 +99,7 @@ void Shader::compile() {
   glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
   if (!success) {
     glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-              << infoLog << std::endl;
+    checkShaderCompileError();
   };
 
   fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -102,8 +110,7 @@ void Shader::compile() {
   glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
   if (!success) {
     glGetShaderInfoLog(fragment, 512, NULL, infoLog);
-    std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
-              << infoLog << std::endl;
+    checkShaderCompileError();
   };
 
   // 着色器程序
@@ -115,8 +122,7 @@ void Shader::compile() {
   glGetProgramiv(ID, GL_LINK_STATUS, &success);
   if (!success) {
     glGetProgramInfoLog(ID, 512, NULL, infoLog);
-    std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
-              << infoLog << std::endl;
+    checkShaderLinkingError();
   }
 
   // 删除着色器，它们已经链接到我们的程序中了，已经不再需要了
@@ -130,7 +136,7 @@ void Shader::compile() {
     int success;
     char infoLog[512];
 
-    // 顶点着色器
+    // 几何着色器
     geomerty = glCreateShader(GL_GEOMETRY_SHADER);
     const char* gShader = this->geometryShaderCode.c_str();
     glShaderSource(geomerty, 1, &gShader, NULL);
@@ -139,8 +145,7 @@ void Shader::compile() {
     glGetShaderiv(geomerty, GL_COMPILE_STATUS, &success);
     if (!success) {
       glGetShaderInfoLog(geomerty, 512, NULL, infoLog);
-      std::cout << "ERROR::SHADER::GEOMETRY::COMPILATION_FAILED\n"
-                << infoLog << std::endl;
+      checkShaderCompileError();
     };
 
     if (ID == -1) ID = glCreateProgram();
@@ -150,8 +155,7 @@ void Shader::compile() {
     glGetProgramiv(ID, GL_LINK_STATUS, &success);
     if (!success) {
       glGetProgramInfoLog(ID, 512, NULL, infoLog);
-      std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
-                << infoLog << std::endl;
+      checkShaderLinkingError();
     }
 
     // 删除着色器，它们已经链接到我们的程序中了，已经不再需要了

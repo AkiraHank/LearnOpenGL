@@ -16,3 +16,8 @@ void skybox();
 void advancedGLSL();
 void geometryShader();
 void instancing();
+void planet();
+void AntiAlias();
+
+// chapter 5
+void AdvancedLighting();

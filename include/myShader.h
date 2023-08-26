@@ -9,6 +9,7 @@
 #include <iostream>
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "callbacks.h"
 
 class Shader {
 public:
