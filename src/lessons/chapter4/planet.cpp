@@ -1,25 +1,21 @@
 #include "myShader.h"
-#include "IndicesBuffer.h"
-#include "VertexBuffer.h"
 #include "model.h"
-#include "lights.h"
 #include "map"
-#include <iostream>
 
 void planet() {
   glEnable(GL_DEPTH_TEST);
   int ret = 0;
-  Shader shader("resources/shaders/chapter4/planet.vs", "resources/shaders/chapter4/planet.fs");
+  Shader shader("/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.vs", "/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.fs");
   shader.compile();
-  Shader rockShader("resources/shaders/chapter4/rock.vs", "resources/shaders/chapter4/planet.fs");
+  Shader rockShader("/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/rock.vs", "/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.fs");
   rockShader.compile();
 
-  Model planet("resources/objects/planet/planet.obj");
-  Model rock("resources/objects/rock/rock.obj");
+  Model planet("/Users/hank/Documents/Projects/LearnOpenGL/resources/objects/planet/planet.obj");
+  Model rock("/Users/hank/Documents/Projects/LearnOpenGL/resources/objects/rock/rock.obj");
 
   // generate a large list of semi-random model transformation matrices
   // ------------------------------------------------------------------
-  const unsigned int amount = 50000;
+  const unsigned int amount = 5000;
   glm::mat4* modelMatrices;
   modelMatrices = new glm::mat4[amount];
   srand(static_cast<unsigned int>(glfwGetTime())); // initialize random seed
@@ -38,11 +34,11 @@ void planet() {
     model = glm::translate(model, glm::vec3(x, y, z));
 
     // 2. scale: Scale between 0.05 and 0.25f
-    float scale = static_cast<float>((rand() % 20) / 100.0 + 0.05);
+    auto scale = static_cast<float>((rand() % 20) / 100.0 + 0.05);
     model = glm::scale(model, glm::vec3(scale));
 
     // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-    float rotAngle = static_cast<float>((rand() % 360));
+    auto rotAngle = static_cast<float>((rand() % 360));
     model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
     // 4. now add to list of matrices
@@ -54,8 +50,8 @@ void planet() {
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
   glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
 
-  for (unsigned int i = 0; i < rock.getMeshes().size(); i++) {
-    unsigned int VAO = rock.getMeshes()[i].VAO;
+  for (const auto & mesh : rock.getMeshes()) {
+    unsigned int VAO = mesh.VAO;
     glBindVertexArray(VAO);
     // 顶点属性
     GLsizei vec4Size = sizeof(glm::vec4);
@@ -83,7 +79,7 @@ void planet() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // mvp matrixs
+    // mvp matrices
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = Camera::getInstance().GetViewMatrix();
     glm::mat4 projection = glm::perspective(
@@ -104,10 +100,10 @@ void planet() {
     rockShader.setMat4("projection", projection);
     rockShader.setMat4("view", view);
     // draw meteorites
-    for (unsigned int i = 0; i < rock.getMeshes().size(); i++) {
-      glBindVertexArray(rock.getMeshes()[i].VAO);
+    for (const auto & mesh : rock.getMeshes()) {
+      glBindVertexArray(mesh.VAO);
       glDrawElementsInstanced(
-          GL_TRIANGLES, rock.getMeshes()[i].indices.size(), GL_UNSIGNED_INT, 0, amount);
+          GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, amount);
     }
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

@@ -35,7 +35,7 @@
             << infoLog << NONE;
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const GLchar* geometryShaderPath, bool useFile) {
-  if (useFile == false) {
+  if (!useFile) {
     this->vertexShaderCode = vertexPath;
     this->fragShaderCode = fragmentPath;
     this->geometryShaderCode = geometryShaderPath != nullptr ? geometryShaderPath : "";
