@@ -3,9 +3,6 @@
 
 int main(int argv, char** args) {
   init();
-  // skybox();
-  // instancing();
-   planet();
-//  AntiAlias();
+  AdvancedLighting();
   return 0;
 }

@@ -85,7 +85,7 @@ void AntiAlias() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // mvp matrixs
+    // mvp matrices
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = Camera::getInstance().GetViewMatrix();
     glm::mat4 projection = glm::perspective(
@@ -106,10 +106,10 @@ void AntiAlias() {
     rockShader.setMat4("projection", projection);
     rockShader.setMat4("view", view);
     // draw meteorites
-    for (unsigned int i = 0; i < rock.getMeshes().size(); i++) {
-      glBindVertexArray(rock.getMeshes()[i].VAO);
+    for (const auto& mesh : rock.getMeshes()) {
+      glBindVertexArray(mesh.VAO);
       glDrawElementsInstanced(
-          GL_TRIANGLES, rock.getMeshes()[i].indices.size(), GL_UNSIGNED_INT, 0, amount);
+          GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, amount);
     }
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

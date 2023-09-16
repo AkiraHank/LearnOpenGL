@@ -3,7 +3,6 @@
 //
 #include "callbacks.h"
 #include "stb_image.h"
-#include "stdint.h"
 
 static float deltaTime = 0.0f; // 当前帧与上一帧的时间差
 static float lastFrame = 0.0f; // 上一帧的时间
@@ -13,6 +12,7 @@ float lastY = 300;
 
 int windowWidth = 800;
 int windowHeight = 600;
+bool blinn = false;
 
 GLFWwindow* window = nullptr;
 
@@ -43,6 +43,10 @@ void processInput(GLFWwindow* window) {
     Camera::getInstance().ProcessKeyboard(UP, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     Camera::getInstance().ProcessKeyboard(DOWN, deltaTime);
+
+  // global vars setting
+  if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+    blinn = !blinn;
 }
 
 unsigned int loadImg(const char* path, unsigned int* tex_id) {

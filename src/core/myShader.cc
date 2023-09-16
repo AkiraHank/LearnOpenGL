@@ -19,11 +19,11 @@
 // }
 // #define glCheckError() glCheckError_(__FILE__, __LINE__)
 
-#define checkSetUniformError()                                           \
-  auto ret = glGetError();                                               \
-  if (ret) {                                                             \
-    printf(LIGHT_RED "error %d in %s:%d" NONE, ret, __FILE__, __LINE__); \
-    printf("name of uniform: %s\n", name.c_str());                       \
+#define checkSetUniformError()                                     \
+  auto ret = glGetError();                                         \
+  if (ret) {                                                       \
+    printf(RED "error %d in %s:%d" NONE, ret, __FILE__, __LINE__); \
+    printf(RED "name of uniform: %s\n" NONE, name.c_str());        \
   }
 
 #define checkShaderCompileError()                              \
@@ -133,8 +133,6 @@ void Shader::compile() {
   if (this->geometryShaderCode != "") {
     // compile
     unsigned int geomerty;
-    int success;
-    char infoLog[512];
 
     // 几何着色器
     geomerty = glCreateShader(GL_GEOMETRY_SHADER);

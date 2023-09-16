@@ -28,12 +28,12 @@ const float ZOOM = 45.0f;
 class Camera {
 public:
   // camera Attributes
-  glm::vec3 Position;
-  glm::vec3 originPosition;
+  glm::vec3 Position{};
+  glm::vec3 originPosition{};
   glm::vec3 Front;
-  glm::vec3 Up;
-  glm::vec3 Right;
-  glm::vec3 WorldUp;
+  glm::vec3 Up{};
+  glm::vec3 Right{};
+  glm::vec3 WorldUp{};
   // euler Angles
   float Yaw;
   float Pitch;
@@ -44,10 +44,10 @@ public:
 
 private:
   // constructor with vectors
-  Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
-         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
-         float yaw = YAW,
-         float pitch = PITCH);
+  explicit Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
+                  glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+                  float yaw = YAW,
+                  float pitch = PITCH);
 
   // constructor with scalar values
   Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
@@ -63,7 +63,7 @@ public:
   Camera& operator=(const Camera& camera) = delete;
 
   // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-  glm::mat4 GetViewMatrix();
+  [[nodiscard]] glm::mat4 GetViewMatrix() const;
 
   // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
   void ProcessKeyboard(Camera_Movement direction, float deltaTime);

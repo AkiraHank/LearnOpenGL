@@ -5,9 +5,11 @@
 void planet() {
   glEnable(GL_DEPTH_TEST);
   int ret = 0;
-  Shader shader("/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.vs", "/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.fs");
+  Shader shader("/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.vs",
+                "/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.fs");
   shader.compile();
-  Shader rockShader("/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/rock.vs", "/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.fs");
+  Shader rockShader("/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/rock.vs",
+                    "/Users/hank/Documents/Projects/LearnOpenGL/resources/shaders/chapter4/planet.fs");
   rockShader.compile();
 
   Model planet("/Users/hank/Documents/Projects/LearnOpenGL/resources/objects/planet/planet.obj");
@@ -50,7 +52,7 @@ void planet() {
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
   glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
 
-  for (const auto & mesh : rock.getMeshes()) {
+  for (const auto& mesh : rock.getMeshes()) {
     unsigned int VAO = mesh.VAO;
     glBindVertexArray(VAO);
     // 顶点属性
@@ -100,7 +102,7 @@ void planet() {
     rockShader.setMat4("projection", projection);
     rockShader.setMat4("view", view);
     // draw meteorites
-    for (const auto & mesh : rock.getMeshes()) {
+    for (const auto& mesh : rock.getMeshes()) {
       glBindVertexArray(mesh.VAO);
       glDrawElementsInstanced(
           GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0, amount);

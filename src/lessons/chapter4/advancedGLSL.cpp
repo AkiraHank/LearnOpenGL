@@ -19,7 +19,7 @@ void advancedGLSL() {
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
-  // plane
+  // blinn
   std::vector<GLfloat> planeVertices = loadVertices("resources/vertices/planeVertices");
   unsigned int planeVAO;
   glGenVertexArrays(1, &planeVAO);
@@ -212,7 +212,7 @@ void advancedGLSL() {
     glDepthFunc(GL_LESS); // set depth function back to default
 
     /// frame buffer related
-    // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+    // now bind back to default framebuffer and draw a quad blinn with the attached framebuffer color texture
     // glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
     // // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
@@ -220,7 +220,7 @@ void advancedGLSL() {
 
     // screenShader.use();
     // glBindVertexArray(quadVAO);
-    // glBindTexture(GL_TEXTURE_2D, texColorBuffer); // use the color attachment texture as the texture of the quad plane
+    // glBindTexture(GL_TEXTURE_2D, texColorBuffer); // use the color attachment texture as the texture of the quad blinn
     // glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glfwSwapBuffers(window);

@@ -3,3 +3,5 @@
 /zips
 /out
 /xcode
+/cmake-build-debug-clang
+/.idea
