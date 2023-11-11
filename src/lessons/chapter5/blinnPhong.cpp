@@ -11,12 +11,6 @@ void AdvancedLighting() {
   glGenVertexArrays(1, &planeVAO);
   glBindVertexArray(planeVAO);
   VertexBuffer wood(&vertices[0], vertices.size() * sizeof(GLfloat));
-  //  unsigned int planeVAO, planeVBO;
-  //  glGenVertexArrays(1, &planeVAO);
-  //  glGenBuffers(1, &planeVBO);
-  //  glBindVertexArray(planeVAO);
-  //  glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-  //  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
   checkGLError();
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
