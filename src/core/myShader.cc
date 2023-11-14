@@ -1,5 +1,6 @@
-#include "myShader.h"
 #include "callbacks.h"
+#include "myShader.h"
+
 // GLenum glCheckError_(const char* file, int line) {
 //   GLenum errorCode;
 //   while ((errorCode = glGetError()) != GL_NO_ERROR) {
@@ -11,7 +12,8 @@
 //     case GL_STACK_OVERFLOW: error = "STACK_OVERFLOW"; break;
 //     case GL_STACK_UNDERFLOW: error = "STACK_UNDERFLOW"; break;
 //     case GL_OUT_OF_MEMORY: error = "OUT_OF_MEMORY"; break;
-//     case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
+//     case GL_INVALID_FRAMEBUFFER_OPERATION: error =
+//     "INVALID_FRAMEBUFFER_OPERATION"; break;
 //     }
 //     std::cout << error << " | " << file << " (" << line << ")" << std::endl;
 //   }
@@ -26,19 +28,20 @@
     printf(RED "name of uniform: %s\n" NONE, name.c_str());        \
   }
 
-#define checkShaderCompileError()                              \
-  std::cout << RED "ERROR::SHADER::VERTEX::COMPILATION_FAILED" \
-            << infoLog << NONE;
+#define checkShaderCompileError()                                         \
+  std::cout << RED "ERROR::SHADER::VERTEX::COMPILATION_FAILED" << infoLog \
+            << NONE;
 
-#define checkShaderLinkingError()                          \
-  std::cout << RED "ERROR::SHADER::VERTEX::LINKING_FAILED" \
-            << infoLog << NONE;
+#define checkShaderLinkingError() \
+  std::cout << RED "ERROR::SHADER::VERTEX::LINKING_FAILED" << infoLog << NONE;
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath, const GLchar* geometryShaderPath, bool useFile) {
+Shader::Shader(const char* vertexPath, const char* fragmentPath,
+               const GLchar* geometryShaderPath, bool useFile) {
   if (!useFile) {
     this->vertexShaderCode = vertexPath;
     this->fragShaderCode = fragmentPath;
-    this->geometryShaderCode = geometryShaderPath != nullptr ? geometryShaderPath : "";
+    this->geometryShaderCode =
+        geometryShaderPath != nullptr ? geometryShaderPath : "";
     return;
   }
   // 1. 从文件路径中获取顶点/片段着色器
@@ -62,7 +65,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const GLchar* g
     this->vertexShaderCode = vShaderStream.str();
     this->fragShaderCode = fShaderStream.str();
   } catch (std::ifstream::failure e) {
-    std::cout << RED "ERROR::SHADER::FILE_OT_SUCCESFULLY_READ" << e.what() << NONE;
+    std::cout << RED "ERROR::SHADER::FILE_OT_SUCCESFULLY_READ" << e.what()
+              << NONE;
   }
 
   if (geometryShaderPath != nullptr) {
@@ -80,7 +84,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const GLchar* g
       // 转换数据流到string
       this->geometryShaderCode = gShaderStream.str();
     } catch (std::ifstream::failure e) {
-      std::cout << RED "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << e.what() << NONE;
+      std::cout << RED "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << e.what()
+                << NONE;
     }
   }
 }
@@ -161,9 +166,7 @@ void Shader::compile() {
   }
 }
 
-void Shader::use() {
-  glUseProgram(ID);
-}
+void Shader::use() { glUseProgram(ID); }
 
 void Shader::setBool(const std::string& name, bool value) const {
   glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
@@ -180,17 +183,20 @@ void Shader::setFloat(const std::string& name, float value) const {
   checkSetUniformError();
 }
 void Shader::setMat2(const std::string& name, const glm::mat2& mat) const {
-  glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+  glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE,
+                     &mat[0][0]);
   checkSetUniformError();
 }
 
 void Shader::setMat3(const std::string& name, const glm::mat3& mat) const {
-  glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+  glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE,
+                     &mat[0][0]);
   checkSetUniformError();
 }
 
 void Shader::setMat4(const std::string& name, const glm::mat4& trans) {
-  glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(trans));
+  glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE,
+                     glm::value_ptr(trans));
   checkSetUniformError();
 }
 
@@ -213,6 +219,4 @@ void Shader::setVec3(const std::string& name, float x, float y, float z) const {
   checkSetUniformError();
 }
 
-void Shader::clean() {
-  glUseProgram(ID);
-}
+void Shader::clean() { glUseProgram(ID); }
