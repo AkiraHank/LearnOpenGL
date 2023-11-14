@@ -1,7 +1,8 @@
 #include "lights.h"
 
-PointLight::PointLight(const std::string& vertexPath, const std::string& fragPath) :
-    myShader(std::make_unique<Shader>(vertexPath.c_str(), fragPath.c_str())) {
+PointLight::PointLight(const std::string& vertexPath,
+                       const std::string& fragPath)
+    : myShader(std::make_unique<Shader>(vertexPath.c_str(), fragPath.c_str())) {
 }
 
 void PointLight::init() {
@@ -44,26 +45,26 @@ void PointLight::init() {
   GLuint lightSphereVBO, lightSphereEBO;
   glGenBuffers(1, &lightSphereVBO);
   glBindBuffer(GL_ARRAY_BUFFER, lightSphereVBO);
-  glBufferData(GL_ARRAY_BUFFER,
-               sphereVertices.size() * sizeof(GLfloat),
-               &sphereVertices[0],
-               GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(GLfloat),
+               &sphereVertices[0], GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
   glGenBuffers(1, &lightSphereEBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightSphereEBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(int), &sphereIndices[0], GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(int),
+               &sphereIndices[0], GL_STATIC_DRAW);
   // vertex and index buffer for lightCube
   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
   // ----------------- sphere -----------------
 
   // TODO: supposed to bind VBO here but actually doesn't have to. why?
   // glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-  // glEnableVertexAttribArray(0);
+  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+  // (void*)0); glEnableVertexAttribArray(0);
 }
 
-void PointLight::setMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) {
+void PointLight::setMVP(const glm::mat4& model, const glm::mat4& view,
+                        const glm::mat4& projection) {
   myShader->use();
   myShader->setMat4("model", model);
   myShader->setMat4("view", view);
