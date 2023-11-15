@@ -1,6 +1,8 @@
 //
 // Created by 谭浩鸣 on 2021/11/30.
 //
+#include <exception>
+
 #include "callbacks.h"
 #include "stb_image.h"
 
@@ -10,8 +12,8 @@ static bool firstMouse = true;
 float lastX = 400;
 float lastY = 300;
 
-int windowWidth = 800;
-int windowHeight = 600;
+int windowWidth = 2560;
+int windowHeight = 1440;
 bool blinn = false;
 
 GLFWwindow* window = nullptr;
@@ -54,56 +56,61 @@ unsigned int loadImg(const char* path, unsigned int* tex_id) {
   // 加载并生成纹理
   int width, height, nrComponents;
   // 设置纹理加载时是否颠倒
-  stbi_set_flip_vertically_on_load(true);
-  unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
+  try {
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
 
-  // if (nrComponents == 4) {
-  //   std::cout << path << std::endl;
-  //   for (int y = 0; y < height / 20; y++) {
-  //     for (int x = 0; x < width / 20; x++) {
-  //       unsigned char* pixelOffset = data + (x + y * width) * nrComponents;
+    // if (nrComponents == 4) {
+    //   std::cout << path << std::endl;
+    //   for (int y = 0; y < height / 20; y++) {
+    //     for (int x = 0; x < width / 20; x++) {
+    //       unsigned char* pixelOffset = data + (x + y * width) * nrComponents;
 
-  //       unsigned char r = pixelOffset[0];
-  //       unsigned char g = pixelOffset[1];
-  //       unsigned char b = pixelOffset[2];
-  //       unsigned char a = nrComponents >= 4 ? pixelOffset[3] : 0xff;
+    //       unsigned char r = pixelOffset[0];
+    //       unsigned char g = pixelOffset[1];
+    //       unsigned char b = pixelOffset[2];
+    //       unsigned char a = nrComponents >= 4 ? pixelOffset[3] : 0xff;
 
-  //       std::cout << (int)r << " " << (int)g << " " << (int)b << " " <<
-  //       (int)a << std::endl;
-  //     }
-  //   }
-  // }
+    //       std::cout << (int)r << " " << (int)g << " " << (int)b << " " <<
+    //       (int)a << std::endl;
+    //     }
+    //   }
+    // }
 
-  if (data) {
-    GLenum format;
-    if (nrComponents == 1)
-      format = GL_RED;
-    else if (nrComponents == 3)
-      format = GL_RGB;
-    else if (nrComponents == 4)
-      format = GL_RGBA;
-    glBindTexture(GL_TEXTURE_2D, *tex_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format,
-                 GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    // 为当前绑定的纹理对象设置环绕、过滤方式
-    glTexParameteri(
-        GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-        format == GL_RGBA
-            ? GL_CLAMP_TO_EDGE
-            : GL_REPEAT);  // for this tutorial: use GL_CLAMP_TO_EDGE to prevent
-                           // semi-transparent borders. Due to interpolation it
-                           // takes texels from next repeat
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                    format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  } else {
-    std::cout << "Failed to load texture: " << path << std::endl;
+    if (data) {
+      GLenum format;
+      if (nrComponents == 1)
+        format = GL_RED;
+      else if (nrComponents == 3)
+        format = GL_RGB;
+      else if (nrComponents == 4)
+        format = GL_RGBA;
+      glBindTexture(GL_TEXTURE_2D, *tex_id);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format,
+                   GL_UNSIGNED_BYTE, data);
+      glGenerateMipmap(GL_TEXTURE_2D);
+      // 为当前绑定的纹理对象设置环绕、过滤方式
+      glTexParameteri(
+          GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+          format == GL_RGBA
+              ? GL_CLAMP_TO_EDGE
+              : GL_REPEAT);  // for this tutorial: use GL_CLAMP_TO_EDGE to
+                             // prevent semi-transparent borders. Due to
+                             // interpolation it takes texels from next repeat
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+                      format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                      GL_LINEAR_MIPMAP_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    } else {
+      std::cout << "Failed to load texture: " << path << std::endl;
+      return false;
+    }
+    stbi_image_free(data);
+  } catch (const std::exception& e) {
+    std::cout << e.what() << std::endl;
     return false;
   }
-  stbi_image_free(data);
   return true;
 }
 
