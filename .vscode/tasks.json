@@ -10,6 +10,14 @@
             "command": "cmake .. && make -j8"
         },
         {
+            "label": "Compile Win64",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "type": "shell",
+            "command": "cmake -G \"MinGW Makefiles\" .. && make -j8"
+        },
+        {
             "label": "test",
             "options": {
                 "cwd": "${workspaceFolder}/build"

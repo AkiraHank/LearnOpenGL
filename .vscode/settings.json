@@ -87,12 +87,30 @@
     "memory_resource": "cpp",
     "stop_token": "cpp",
     "cinttypes": "cpp",
-    "__verbose_abort": "cpp"
+    "__verbose_abort": "cpp",
+    "xstring": "cpp",
+    "charconv": "cpp",
+    "format": "cpp",
+    "forward_list": "cpp",
+    "xfacet": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocbuf": "cpp",
+    "xlocinfo": "cpp",
+    "xlocmes": "cpp",
+    "xlocmon": "cpp",
+    "xlocnum": "cpp",
+    "xloctime": "cpp",
+    "xmemory": "cpp",
+    "xstddef": "cpp",
+    "xtr1common": "cpp",
+    "xtree": "cpp",
+    "xutility": "cpp"
   },
-  "glsl-linter.validatorPath": 
-// 此处要进行修改，修改为你解压后的那个bin文件夹中的.exe程序文件的路径。
-	"usr/local/bin/glslangValidator", 
-"glsl-linter.fileExtensions": {
+  "glsl-linter.validatorPath":
+  // 此处要进行修改，修改为你解压后的那个bin文件夹中的.exe程序文件的路径。
+  "usr/local/bin/glslangValidator",
+  "glsl-linter.fileExtensions": {
     ".fs.glsl": "frag",
     ".fs": "frag",
     ".vs.glsl": "vert",
@@ -103,6 +121,6 @@
     ".tcs": "tesc",
     ".gs.glsl": "geom",
     ".gs": "geom",
-}
-
+  },
+  "cmake.configureOnOpen": true
 }

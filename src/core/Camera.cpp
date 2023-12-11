@@ -1,4 +1,7 @@
 #include "Camera.h"
+
+#include <iostream>
+
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
@@ -16,8 +19,8 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
 }
 
 // constructor with scalar values
-Camera::Camera(float posX, float posY, float posZ, float upX, float upY,
-               float upZ, float yaw, float pitch)
+Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw,
+               float pitch)
     : Front(glm::vec3(0.0f, 0.0f, -1.0f)),
       MovementSpeed(SPEED),
       MouseSensitivity(SENSITIVITY),
@@ -31,9 +34,7 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY,
 }
 
 // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-glm::mat4 Camera::GetViewMatrix() const {
-  return glm::lookAt(Position, Position + Front, Up);
-}
+glm::mat4 Camera::GetViewMatrix() const { return glm::lookAt(Position, Position + Front, Up); }
 
 // processes input received from any keyboard-like input system. Accepts input
 // parameter in the form of camera defined ENUM (to abstract it from windowing
@@ -47,12 +48,12 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
   if (direction == RESET) Position = originPosition;
   if (direction == UP) Position += Up * velocity;
   if (direction == DOWN) Position -= Up * velocity;
+  if (direction == LIGHT) blinn = !blinn;
 }
 
 // processes input received from a mouse input system. Expects the offset value
 // in both the x and y direction.
-void Camera::ProcessMouseMovement(float xoffset, float yoffset,
-                                  GLboolean constrainPitch) {
+void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch) {
   xoffset *= MouseSensitivity;
   yoffset *= MouseSensitivity;
 
@@ -86,17 +87,13 @@ void Camera::updateCameraVectors() {
   front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
   Front = glm::normalize(front);
   // also re-calculate the Right and Up vector
-  Right = glm::normalize(glm::cross(
-      Front, WorldUp));  // normalize the vectors, because their length gets
-                         // closer to 0 the more you look up or down which
-                         // results in slower movement.
+  Right =
+      glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length
+                                                   // gets closer to 0 the more you look up or down
+                                                   // which results in slower movement.
   Up = glm::normalize(glm::cross(Right, Front));
 }
 
-void Camera::setPosition(const glm::vec3& position) {
-  this->Position = position;
-}
+void Camera::setPosition(const glm::vec3& position) { this->Position = position; }
 
-void Camera::setMoveSpeed(GLfloat moveSpeed) {
-  this->MovementSpeed = moveSpeed;
-}
+void Camera::setMoveSpeed(GLfloat moveSpeed) { this->MovementSpeed = moveSpeed; }

@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.5.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-EXECUTE_PROCESS(COMMAND uname -m COMMAND tr -d '/' OUTPUT_VARIABLE ARCHITECTURE)
+ 
 
 if(APPLE)
     message(STATUS "OS: MacOS")
@@ -14,11 +13,17 @@ if(APPLE)
 elseif(WIN32)
     message(STATUS "OS: Windows")
     message(STATUS "Architecture: ${ARCHITECTURE}")
-    set(CMAKE_FORCE_C_COMPILER gcc)
-    set(CMAKE_FORCE_CXX_COMPILER g++)
-
+    set(CMAKE_C_COMPILER E:/mingw64/bin/gcc.exe)
+    set(CMAKE_CXX_COMPILER E:/mingw64/bin/g++.exe)
     link_directories(bin/win)
 endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall")
+# if(CMAKE_COMPILER_IS_GNUCXX)
+#     message("compiler is GNUCXX")
+# else()
+#     message("compiler is not GNUCXX")
+# endif()
 
 project(LearnOpengl VERSION 0.1.0)
 

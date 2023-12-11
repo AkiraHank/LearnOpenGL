@@ -10,8 +10,7 @@ void AdvancedLighting() {
   // blinn VAO
   std::vector<GLfloat> vertices =
       loadVertices(EditorFoundation::instance()
-                       ->join({EditorFoundation::instance()->getResourceDir(),
-                               "vertices", "blinn"})
+                       ->join({EditorFoundation::instance()->getResourceDir(), "vertices", "blinn"})
                        .c_str());
   unsigned int planeVAO;
   glGenVertexArrays(1, &planeVAO);
@@ -22,20 +21,20 @@ void AdvancedLighting() {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(1);
   checkGLError();
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                        (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(2);
   checkGLError();
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                        (void*)(6 * sizeof(float)));
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
   glBindVertexArray(0);
   checkGLError();
   // load textures
   // -------------
   unsigned int floorTexture;
   auto resFolder = EditorFoundation::instance()->getResourceDir();
+  printf("resFolder: %s\n", resFolder.c_str());
   std::string imgPath2 = EditorFoundation::instance()->join(
       {EditorFoundation::instance()->getResourceDir(), "textures", "wall.jpg"});
+  printf("imgPath2: %s", imgPath2.c_str());
   if (!loadImg(imgPath2.c_str(), &floorTexture)) {
     return;
   }
@@ -43,12 +42,12 @@ void AdvancedLighting() {
   // shader configuration
   // --------------------
   Shader shader(EditorFoundation::instance()
-                    ->join({EditorFoundation::instance()->getResourceDir(),
-                            "shaders", "chapter5", "blinn.vs"})
+                    ->join({EditorFoundation::instance()->getResourceDir(), "shaders", "chapter5",
+                            "blinn.vs"})
                     .c_str(),
                 EditorFoundation::instance()
-                    ->join({EditorFoundation::instance()->getResourceDir(),
-                            "shaders", "chapter5", "blinn.fs"})
+                    ->join({EditorFoundation::instance()->getResourceDir(), "shaders", "chapter5",
+                            "blinn.fs"})
                     .c_str());
   shader.compile();
   shader.use();
@@ -71,16 +70,15 @@ void AdvancedLighting() {
 
     // draw objects
     shader.use();
-    glm::mat4 projection = glm::perspective(
-        glm::radians(Camera::getInstance().Zoom),
-        (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(Camera::getInstance().Zoom),
+                                            (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
     glm::mat4 view = Camera::getInstance().GetViewMatrix();
     shader.setMat4("projection", projection);
     shader.setMat4("view", view);
     // set light uniforms
     shader.setVec3("viewPos", Camera::getInstance().Position);
     shader.setVec3("lightPos", lightPos);
-    shader.setInt("blinn", blinn);
+    shader.setInt("blinn", Camera::getInstance().blinn);
     // floor
     glBindVertexArray(planeVAO);
     glActiveTexture(GL_TEXTURE0);

@@ -5,19 +5,31 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Build and Debug: win64",
             "type": "cppdbg",
             "request": "launch",
-            "name": "Build and Debug",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/build/LearnOpengl.exe",
+            "args": [
+            ],
+            "MIMode": "gdb",
+            "miDebuggerPath": "E:/mingw64/bin/gdb.exe",
+            "preLaunchTask": "Compile Win64",
+            //"externalConsole": true
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Build and Debug: Macos",
             "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/build/LearnOpengl",
             "args": [],
-            "miDebuggerPath": "gdb",
             "preLaunchTask": "Compile"
         },
         {
             "type": "lldb",
             "request": "launch",
-            "name": "test",
+            "name": "test: Macos",
             "cwd": "${workspaceFolder}",
             "program": "build/test",
             "args": [],

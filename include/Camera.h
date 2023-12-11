@@ -15,6 +15,7 @@ enum Camera_Movement {
   RESET,
   UP,
   DOWN,
+  LIGHT
 };
 
 // Default camera values
@@ -41,6 +42,7 @@ public:
   float MovementSpeed;
   float MouseSensitivity;
   float Zoom;
+  bool blinn;
 
 private:
   // constructor with vectors
@@ -76,6 +78,8 @@ public:
 
   void setPosition(const glm::vec3& position);
   void setMoveSpeed(GLfloat moveSpeed);
+
+  bool getBlinn() {return this->blinn;}
 
 private:
   // calculates the front vector from the Camera's (updated) Euler Angles
