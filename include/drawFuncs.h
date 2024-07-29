@@ -20,4 +20,6 @@ void planet();
 void AntiAlias();
 
 // chapter 5
-void AdvancedLighting();
+void BlinnPhong();
+void shadowMapping();
+void normalMapping();

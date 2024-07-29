@@ -48,7 +48,6 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
   if (direction == RESET) Position = originPosition;
   if (direction == UP) Position += Up * velocity;
   if (direction == DOWN) Position -= Up * velocity;
-  if (direction == LIGHT) blinn = !blinn;
 }
 
 // processes input received from a mouse input system. Expects the offset value

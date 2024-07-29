@@ -1,4 +1,6 @@
 #include <initializer_list>
+#include <string>
+
 class EditorFoundation {
  private:
   EditorFoundation() = default;
@@ -13,5 +15,5 @@ class EditorFoundation {
   }
 
   std::string getResourceDir();
-  std::string join(std::initializer_list<std::string> pathes);
+  std::string join(std::initializer_list<std::string> _pathes);
 };

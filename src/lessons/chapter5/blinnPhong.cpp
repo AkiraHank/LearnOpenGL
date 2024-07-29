@@ -1,11 +1,11 @@
 #include <iostream>
+#include <map>
 
 #include "VertexBuffer.h"
 #include "fileSystem.h"
-#include "map"
 #include "myShader.h"
 
-void AdvancedLighting() {
+void BlinnPhong() {
   int ret = 0;
   // blinn VAO
   std::vector<GLfloat> vertices =
@@ -17,24 +17,18 @@ void AdvancedLighting() {
   glBindVertexArray(planeVAO);
   VertexBuffer wood(&vertices[0], vertices.size() * sizeof(GLfloat));
   glEnableVertexAttribArray(0);
-  checkGLError();
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(1);
-  checkGLError();
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(2);
-  checkGLError();
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
   glBindVertexArray(0);
-  checkGLError();
   // load textures
   // -------------
   unsigned int floorTexture;
   auto resFolder = EditorFoundation::instance()->getResourceDir();
-  printf("resFolder: %s\n", resFolder.c_str());
   std::string imgPath2 = EditorFoundation::instance()->join(
       {EditorFoundation::instance()->getResourceDir(), "textures", "wall.jpg"});
-  printf("imgPath2: %s", imgPath2.c_str());
   if (!loadImg(imgPath2.c_str(), &floorTexture)) {
     return;
   }

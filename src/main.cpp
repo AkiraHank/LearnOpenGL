@@ -3,6 +3,6 @@
 
 int main(int argv, char** args) {
   init();
-  AdvancedLighting();
+  normalMapping();
   return 0;
 }

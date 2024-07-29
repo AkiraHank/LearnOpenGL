@@ -105,7 +105,8 @@
     "xstddef": "cpp",
     "xtr1common": "cpp",
     "xtree": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "xhash": "cpp"
   },
   "glsl-linter.validatorPath":
   // 此处要进行修改，修改为你解压后的那个bin文件夹中的.exe程序文件的路径。

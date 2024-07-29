@@ -23,32 +23,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window) {
-  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-    glfwSetWindowShouldClose(window, true);
-  }
-
-  float currentFrame = glfwGetTime();
-  deltaTime = currentFrame - lastFrame;
-  lastFrame = currentFrame;
-
-  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    Camera::getInstance().ProcessKeyboard(FORWARD, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    Camera::getInstance().ProcessKeyboard(BACKWARD, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    Camera::getInstance().ProcessKeyboard(LEFT, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    Camera::getInstance().ProcessKeyboard(RIGHT, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-    Camera::getInstance().ProcessKeyboard(RESET, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS ||
-      glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-    Camera::getInstance().ProcessKeyboard(UP, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    Camera::getInstance().ProcessKeyboard(DOWN, deltaTime);
-}
-
 unsigned int loadImg(const char* path, unsigned int* tex_id) {
   // load texture
   glGenTextures(1, tex_id);
@@ -134,6 +108,32 @@ unsigned int loadImg_clamp(const char* path, unsigned int* tex_id) {
   return true;
 }
 
+void processInput(GLFWwindow* window) {
+  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, true);
+  }
+
+  float currentFrame = glfwGetTime();
+  deltaTime = currentFrame - lastFrame;
+  lastFrame = currentFrame;
+
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    Camera::getInstance().ProcessKeyboard(FORWARD, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    Camera::getInstance().ProcessKeyboard(BACKWARD, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    Camera::getInstance().ProcessKeyboard(LEFT, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    Camera::getInstance().ProcessKeyboard(RIGHT, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    Camera::getInstance().ProcessKeyboard(RESET, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS ||
+      glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    Camera::getInstance().ProcessKeyboard(UP, deltaTime);
+  if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    Camera::getInstance().ProcessKeyboard(DOWN, deltaTime);
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
   // global vars setting
   if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
@@ -175,7 +175,7 @@ void init() {
   glfwInit();
   glfwSetErrorCallback(error_callback);
 
-  // window related
+  // ======= window related
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

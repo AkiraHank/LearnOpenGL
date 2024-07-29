@@ -15,7 +15,6 @@
             "MIMode": "gdb",
             "miDebuggerPath": "E:/mingw64/bin/gdb.exe",
             "preLaunchTask": "Compile Win64",
-            //"externalConsole": true
         },
         {
             "type": "lldb",
